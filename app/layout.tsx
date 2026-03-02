@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "JPQN Education - Personalized Tutoring",
   description:
-    "Empower learners with adaptive, student-centered tutoring that nurtures curiosity, builds foundational skills, and honors every learner's individuality.",
+    "Empowering children with adapative tutoring that nurtures curiosity, builds foundational skills, and honors every learner's individuality.",
 };
 
 export default function RootLayout({

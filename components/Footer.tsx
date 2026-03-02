@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 
 export default function Footer() {
@@ -19,7 +20,7 @@ export default function Footer() {
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
       <div className="grid gap-8 md:grid-cols-4">
-        <div className="md:col-span-2">
+        <div className="text-center flex flex-col items-center md:text-left md:items-start md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
@@ -32,7 +33,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div>
+        <div className="text-center md:text-left">
           <h4 className="font-semibold mb-4 text-sm">Navigate</h4>
           <ul className="space-y-2 text-sm text-muted-foreground items-center">
             {navItems.map((item) => (
@@ -48,15 +49,20 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
-          <h4 className="font-semibold mb-4 text-sm">Contact</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>info@jpqneducation.com</li>
-          </ul>
+        <div className="flex flex-row justify-center gap-8 md:flex-col md:justify-start md:gap-4 md:text-left">
+          <Link href={"/privacy-policy"} className="font-semibold text-sm hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
+          <Link
+            href={"/terms-and-conditions"}
+            className="font-semibold text-sm hover:text-foreground transition-colors"
+          >
+            Terms and Conditions
+          </Link>
         </div>
       </div>
 
-      <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
+      <div className="mt-12 border-t border-border pb-8 pt-8 text-center text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} JPQN Education. All rights reserved.</p>
       </div>
     </div>

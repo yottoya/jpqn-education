@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { GraduationCap, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
+import Link from "next/link";
 
 interface HeaderProps {
-  onNavigate: (id: string) => void;
+  onNavigate?: (id: string) => void;
 }
 
 export default function Header({ onNavigate }: HeaderProps) {
@@ -22,7 +24,16 @@ export default function Header({ onNavigate }: HeaderProps) {
   }, []);
 
   const handleNavigate = (id: string) => {
-    onNavigate(id);
+    if (onNavigate) {
+      onNavigate(id);
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.assign(`/#${id}`);
+      }
+    }
     setMobileMenuOpen(false);
   };
 
@@ -38,19 +49,21 @@ export default function Header({ onNavigate }: HeaderProps) {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
         isScrolled
           ? "mx-0 mt-0 rounded-none bg-primary/95 backdrop-blur-md shadow-lg"
-          : "mx-4 mt-4 rounded-3xl bg-primary backdrop-blur-sm shadow-md md:mx-8 md:mt-6"
+          : "mx-4 mt-4 rounded-xl bg-primary backdrop-blur-sm shadow-md md:mx-8 md:mt-6"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex h-16 items-center justify-between md:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-foreground/10">
-              <GraduationCap className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-semibold text-primary-foreground md:text-xl">
-              JPQN Education
-            </span>
+          <div>
+            <Link href={"/"} className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-foreground/10">
+                <GraduationCap className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="text-lg font-semibold text-primary-foreground md:text-xl">
+                JPQN Education
+              </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -76,17 +89,21 @@ export default function Header({ onNavigate }: HeaderProps) {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-primary-foreground"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          {/*Dark Mode & Mobile Menu */}
+          <div>
+            <AnimatedThemeToggler />
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-primary-foreground"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
