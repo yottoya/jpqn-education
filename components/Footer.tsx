@@ -18,7 +18,7 @@ export default function Footer() {
     { id: "booking", label: "Book Now" },
   ];
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <div className="pt-12 mx-auto max-w-7xl px-4 md:px-6">
       <div className="grid gap-8 md:grid-cols-4">
         <div className="text-center flex flex-col items-center md:text-left md:items-start md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
@@ -49,15 +49,18 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div className="flex flex-row justify-center gap-8 md:flex-col md:justify-start md:gap-4 md:text-left">
-          <Link href={"/privacy-policy"} className="font-semibold text-sm hover:text-foreground transition-colors">
-            Privacy Policy
+        <div className="flex flex-row justify-center gap-4 md:flex-col md:justify-start md:gap-4 md:text-left">
+          <Link
+            href={"/privacy-policy"}
+            className="font-semibold text-sm hover:text-foreground transition-colors"
+          >
+            Privacy
           </Link>
           <Link
             href={"/terms-and-conditions"}
             className="font-semibold text-sm hover:text-foreground transition-colors"
           >
-            Terms and Conditions
+            Terms
           </Link>
         </div>
       </div>

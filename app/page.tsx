@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { cn } from "@/lib/utils";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import GsapPageWrapper from "@/components/GsapPageWrapper";
-import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import MultiStepForm from "@/components/MultiStepForm";
+import { ArrowRightIcon } from "lucide-react";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 
 export const metadata: Metadata = {
   title: "JPQN Education",
@@ -10,29 +13,54 @@ export const metadata: Metadata = {
     "Empowering children with adapative tutoring that nurtures curiosity, builds foundational skills, and honors every learner's individuality.",
 };
 
+function MyShinyText() {
+  return (
+    <div className="z-10 p-6 flex items-center justify-center">
+      <div
+        className={cn(
+          "group rounded-full border border-black/5 bg-neutral-400 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800",
+        )}
+      >
+        <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
+          <span>5 ⭐ 1-On-1 Tutoring!</span>
+        </AnimatedShinyText>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <GsapPageWrapper>
       {/* Hero Section */}
       <section
         id="hero"
-        className="min-h-dvh bg-amber-600 flex items-center justify-center pt-24"
+        className="min-h-dvh flex items-center justify-center relative overflow-hidden"
       >
-        <img src={"/images/chalkboard.png"} />
-        <div className="rounded-xl bg-red-800 max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold drop-shadow-lg">
+        {/* Background Image Setup */}
+        <div className="pt-24 absolute inset-0 z-0 justify-center items-center items-start pl-2 pr-2">
+          <MyShinyText />
+          <img
+            src={"/images/chalkboard.png"}
+            alt="Chalkboard background"
+            className="object-contain md:object-cover md:h-full opacity-90"
+          />
+        </div>
+
+        {/* Text Content */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-6 md:px-12 py-12 md:py-24">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold drop-shadow-lg text-white font-mono tracking-wide">
             Hello! I am Julia
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 drop-shadow-md">
+          <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-200 drop-shadow-md font-mono mt-4 md:mt-6">
             and I don&apos;t like talking about myself, so here is what my
             past/current students and parents say about me.
           </p>
-          <button className="bg-primary px-8 py-4 rounded-lg font-semibold shadow-lg hover:bg-primary/90 transition-colors">
+          <button className="bg-primary px-6 py-3 md:px-8 md:py-4 rounded-lg font-semibold shadow-lg hover:bg-primary/90 transition-colors text-white mt-4">
             <a href="#contact">Book a Session</a>
           </button>
         </div>
       </section>
-
       {/* Problems Section */}
       <section id="problems" className="py-16 px-4">
         <img src={"/images/julia-pt.webp"} className="mt-32" />
@@ -57,7 +85,6 @@ export default function Home() {
           </ul>
         </div>
       </section>
-
       {/* Solution Section */}
       <section id="solution" className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
@@ -77,7 +104,6 @@ export default function Home() {
           </ul>
         </div>
       </section>
-
       {/* Mission Section */}
       <section id="mission" className="py-16 px-4 ">
         <div className="max-w-4xl mx-auto text-center">
@@ -91,7 +117,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
       {/* Vision Section */}
       <section id="vision" className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
@@ -108,7 +133,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
       {/* Services Section */}
       <section id="services" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
@@ -190,7 +214,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Policy Section */}
       <section id="policy" className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
@@ -205,9 +228,8 @@ export default function Home() {
           </p>
         </div>
       </section>
-
       {/* Become Tutor Section */}
-      <section id="contact" className="py-16 px-4 ">
+      <section id="contact" className="bg-background py-16 px-2 ">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">
             Want to learn how to become a tutor with no experience?
@@ -220,6 +242,13 @@ export default function Home() {
             Contact Us
           </button>
         </div>
+      </section>
+      <section className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4 py-16">
+        <Card className="w-full max-w-lg shadow-lg border-gray-200">
+          <CardContent className="p-8 md:p-10">
+            <MultiStepForm />
+          </CardContent>
+        </Card>
       </section>
     </GsapPageWrapper>
   );

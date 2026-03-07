@@ -5,6 +5,8 @@ import { GraduationCap, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
 import Link from "next/link";
+import { useWhichScreen } from "@/hooks/useWhichScreen";
+import { RainbowButton } from "./ui/rainbow-button";
 
 interface HeaderProps {
   onNavigate?: (id: string) => void;
@@ -44,6 +46,8 @@ export default function Header({ onNavigate }: HeaderProps) {
     { id: "booking", label: "Book Now" },
   ];
 
+  const device = useWhichScreen();
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
@@ -81,17 +85,21 @@ export default function Header({ onNavigate }: HeaderProps) {
 
           {/* CTA Button Desktop */}
           <div className="hidden md:block">
-            <Button
+            <RainbowButton
+              variant="outline"
               onClick={() => handleNavigate("booking")}
-              className="rounded-full bg-primary-foreground text-primary hover:bg-primary-foreground/90"
             >
               Improve Grades Now
-            </Button>
+            </RainbowButton>
           </div>
 
           {/*Dark Mode & Mobile Menu */}
-          <div>
-            <AnimatedThemeToggler />
+          <div className="flex justify-center items-center gap-4">
+            {device === "mobile" ? (
+              <AnimatedThemeToggler className="text-primary-foreground" />
+            ) : (
+              <></>
+            )}
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -119,12 +127,12 @@ export default function Header({ onNavigate }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
-              <Button
+              <RainbowButton
+                variant="outline"
                 onClick={() => handleNavigate("booking")}
-                className="w-full rounded-full bg-primary-foreground text-primary hover:bg-primary-foreground/90"
               >
                 Improve Grades Now
-              </Button>
+              </RainbowButton>
             </nav>
           </div>
         )}
