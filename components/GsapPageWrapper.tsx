@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function GsapPageWrapper({
+export default function GsapSectionWrapper({
   children,
 }: {
   children: React.ReactNode;
