@@ -14,6 +14,7 @@ import {
 
 import { BusinessInfo } from "../data/constants";
 import GHLBookingForm from "@/components/homepage-sections/ghl-booking-frame";
+import Hello from "@/components/homepage-sections/hi-section";
 
 export const metadata: Metadata = {
   title: BusinessInfo.siteTitle,
@@ -23,7 +24,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <GsapSectionWrapper>
-      <HeroSection className="text-red-500" />
+      <HeroSection />
+      <Hello idName="about" />
       <ProblemsSection />
       <SolutionSection />
       <Mission />

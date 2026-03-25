@@ -18,56 +18,69 @@ export default function Footer() {
     { id: "booking", label: "Book Now" },
   ];
   return (
-    <div className="pt-12 mx-auto max-w-7xl px-4 md:px-6">
-      <div className="grid gap-8 md:grid-cols-4">
-        <div className="text-center flex flex-col items-center md:text-left md:items-start md:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <GraduationCap className="h-5 w-5 text-primary-foreground" />
+    // 1. The main "Box" - keeps the border and rounded corners full width or large
+    <footer className="border-t border-x border-gray-300 rounded-t-2xl pt-12 mt-20">
+      {/* 2. The Content Wrapper - limits how far the columns can spread */}
+      <div className="max-w-6xl mx-auto px-6 md:px-8">
+        <div className="grid gap-12 md:grid-cols-4">
+          {/* Logo & Bio - Spans 2 columns */}
+          <div className="flex flex-col items-center md:items-start md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                <GraduationCap className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="text-lg font-semibold">JPQN Education</span>
             </div>
-            <span className="text-lg font-semibold">JPQN Education</span>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed text-center md:text-left">
+              Adaptive, student-centered tutoring that nurtures curiosity and
+              builds lasting confidence.
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-            Adaptive, student-centered tutoring that nurtures curiosity and
-            builds lasting confidence.
+
+          {/* Navigate Column */}
+          <div className="text-center md:text-left">
+            <h4 className="font-semibold mb-4 text-sm">Navigate</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <button
+                    onClick={() => scrollToSection(item.id)}
+                    className="hover:text-foreground transition-colors"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Privacy/Terms Column */}
+          <div className="flex flex-col items-center md:items-start gap-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-2 text-sm text-foreground">
+              Legal
+            </h4>
+            <Link
+              href="/privacy-policy"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms-and-conditions"
+              className="hover:text-foreground transition-colors"
+            >
+              Terms & Conditions
+            </Link>
+          </div>
+        </div>
+
+        {/* Bottom Copyright Area */}
+        <div className="mt-12 border-t border-border pb-8 pt-8 text-center text-sm text-muted-foreground">
+          <p>
+            © {new Date().getFullYear()} JPQN Education. All rights reserved.
           </p>
         </div>
-
-        <div className="text-center md:text-left">
-          <h4 className="font-semibold mb-4 text-sm">Navigate</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground items-center">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => scrollToSection(item.id)}
-                  className="hover:text-foreground transition-colors"
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-row justify-center gap-4 md:flex-col md:justify-start md:gap-4 md:text-left">
-          <Link
-            href={"/privacy-policy"}
-            className="font-semibold text-sm hover:text-foreground transition-colors"
-          >
-            Privacy
-          </Link>
-          <Link
-            href={"/terms-and-conditions"}
-            className="font-semibold text-sm hover:text-foreground transition-colors"
-          >
-            Terms
-          </Link>
-        </div>
       </div>
-
-      <div className="mt-12 border-t border-border pb-8 pt-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} JPQN Education. All rights reserved.</p>
-      </div>
-    </div>
+    </footer>
   );
 }

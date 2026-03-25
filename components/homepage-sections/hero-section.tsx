@@ -1,9 +1,11 @@
 import localFont from "next/font/local";
 import { FiveStarShine } from "../five-star-shiny-text";
-import { ShinyButton } from "../ui/shiny-button";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { RainbowButton } from "../ui/rainbow-button";
+import { CRainbowButton } from "../c-rainbow-button";
+import { TextAnimate } from "../ui/text-animate";
+import { ReviewAvatarCircles } from "./review-avatars";
 
 const myFont = localFont({
   src: "../../fonts/EraserRegular.ttf",
@@ -11,8 +13,15 @@ const myFont = localFont({
 });
 
 const pageData = {
-  headline: "1-on-1 Tutoring For Pre-K - 8",
-  tagline: "Personalized tutoring for your children ",
+  headline: "1-on-1 Tutoring For Pre-K - 8th",
+  tagline:
+    "Helping your children excel beyond what you and they think is possible",
+};
+
+const mainHeadlineChunks = {
+  part1: pageData.headline.slice(0, 6),
+  part2: pageData.headline.slice(7, 19),
+  part3: pageData.headline.slice(20, 32),
 };
 
 interface HeroSectionProps extends React.HTMLAttributes<HTMLElement> {}
@@ -30,9 +39,10 @@ const handleNavigate = (id: string) => {
 export function HeroSection({ className }: HeroSectionProps) {
   return (
     <section
-      // min-h-screen ensures it fills the viewport vertically
       className={cn(
-        `bg-red-400 relative min-h-screen w-full flex items-center justify-center overflow-hidden`,
+        // 1. Changed justify-center to justify-start
+        // 2. Added pt-24 for mobile and pt-40 for desktop
+        "relative min-h-dvh w-full flex flex-col items-center justify-start overflow-hidden pt-36 md:pt-40",
         className,
       )}
     >
@@ -41,33 +51,62 @@ export function HeroSection({ className }: HeroSectionProps) {
         <img
           src="/images/chalkboard-four.jpg"
           alt="Chalkboard background"
-          // w-full h-full + object-cover is the magic combo to remove whitespace
           className="h-full w-full object-cover"
         />
-        {/* Optional: Add a subtle dark overlay to make text more readable */}
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      {/* Text Content */}
-      <div
-        id="hero-headline"
-        className="relative z-10 max-w-4xl px-6 transform -translate-y-24 translate-x-4"
-      >
-        <FiveStarShine />
+      {/* Content Wrapper */}
+      <div className="relative z-10 w-full max-w-5xl px-4 sm:px-6 flex flex-col items-center text-center">
+        {/* Shine Badge - Reduced margin to keep it tight */}
+        <div className="mb-4 md:mb-8">
+          <FiveStarShine />
+        </div>
 
+        {/* Headline */}
         <h1
-          className={`${myFont.className} text-white text-center text-[64px] font-bold tracking-wide drop-shadow-md sm:text-6xl md:text-8xl`}
+          className={`${myFont.className} pt-6 text-white font-bold tracking-tight drop-shadow-lg 
+            text-[50px] xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl 
+            leading-[1.1] md:leading-none`}
         >
-          {pageData.headline}
+          <TextAnimate animation="blurInUp" by="character" duration={0.5}>
+            {mainHeadlineChunks.part1}
+          </TextAnimate>
+          <TextAnimate
+            animation="blurInUp"
+            by="character"
+            delay={0.5}
+            duration={0.5}
+          >
+            {mainHeadlineChunks.part2}
+          </TextAnimate>
+          <TextAnimate
+            animation="blurInUp"
+            by="character"
+            delay={1}
+            duration={0.5}
+          >
+            {mainHeadlineChunks.part3}
+          </TextAnimate>
         </h1>
+
+        {/* Tagline */}
         <p
-          className={`${myFont.className} text-white text-center mx-auto mt-6 max-w-2xl font-mono text-lg opacity-90 sm:text-xl md:text-2xl`}
+          className={`${myFont.className} pt-6 text-white mx-auto mt-4 md:mt-6 
+            max-w-70 xs:max-w-md md:max-w-2xl 
+            text-base sm:text-lg md:text-2xl 
+            opacity-90 leading-relaxed`}
         >
-          {pageData.tagline}
+          <TextAnimate animation="slideUp" by="word" delay={2} duration={3}>
+            {pageData.tagline}
+          </TextAnimate>
         </p>
-        <RainbowButton size={"lg"} variant={"outline"}>
-          Get Enrolled!
-        </RainbowButton>
+        <ReviewAvatarCircles />
+
+        {/* Button */}
+        <div className="mt-4 w-full lg:w-5 flex justify-center">
+          <CRainbowButton />
+        </div>
       </div>
     </section>
   );

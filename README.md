@@ -34,3 +34,77 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+# Cloudflare Workers
+
+## 1. Install the "bridge"
+
+```bash
+pnpm add @opennextjs/cloudflare
+pnpm add -D wrangler
+
+```
+
+## 2. Add the Config Files
+
+- `wrangler.jsonc`
+
+```json
+{
+  "name": "jpqn-education", // name of the project
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-12-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
+}
+```
+
+- `open-next.config.ts`
+
+```ts
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+
+export default defineCloudflareConfig({
+  // This is the default configuration for OpenNext on Cloudflare
+});
+```
+
+- Update `next.config.ts` to enable compatibility with the Workers environment:
+
+```ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+  serverExternalPackages: ["@opennextjs/cloudflare"],
+};
+
+export default nextConfig;
+```
+
+- Update `package.json`
+  - Update the `scripts:` part to this:
+
+```json
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+  },
+
+```
+
+## 3. Deploying via the CF UI
+
+- Connect via github and set scope to access only specific repo
+- Commands:
+  - Build:
+    - `pnpm opennextjs-cloudflare build`
+  - Deploy:
+    - `pnpm opennextjs-cloudflare deploy`
