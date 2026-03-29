@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
+import { businessAddress } from "@/data/constants";
 
 export default function Footer() {
   const scrollToSection = (id: string) => {
@@ -17,12 +18,12 @@ export default function Footer() {
     { id: "mission", label: "Mission" },
     { id: "booking", label: "Book Now" },
   ];
+
   return (
-    // 1. The main "Box" - keeps the border and rounded corners full width or large
     <footer className="border-t border-x border-gray-300 rounded-t-2xl pt-12 mt-20">
-      {/* 2. The Content Wrapper - limits how far the columns can spread */}
       <div className="max-w-6xl mx-auto px-6 md:px-8">
-        <div className="grid gap-12 md:grid-cols-4">
+        {/* Changed to md:grid-cols-5 to accommodate all columns in one row */}
+        <div className="grid gap-12 grid-cols-1 md:grid-cols-5">
           {/* Logo & Bio - Spans 2 columns */}
           <div className="flex flex-col items-center md:items-start md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
@@ -39,7 +40,9 @@ export default function Footer() {
 
           {/* Navigate Column */}
           <div className="text-center md:text-left">
-            <h4 className="font-semibold mb-4 text-sm">Navigate</h4>
+            <h4 className="font-semibold mb-4 text-sm text-foreground">
+              Navigate
+            </h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               {navItems.map((item) => (
                 <li key={item.id}>
@@ -54,7 +57,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Privacy/Terms Column */}
+          {/* Legal Column */}
           <div className="flex flex-col items-center md:items-start gap-2 text-sm text-muted-foreground">
             <h4 className="font-semibold mb-2 text-sm text-foreground">
               Legal
@@ -70,6 +73,21 @@ export default function Footer() {
               className="hover:text-foreground transition-colors"
             >
               Terms & Conditions
+            </Link>
+          </div>
+
+          {/* Location Column - Now sits to the right of Legal */}
+          <div className="flex flex-col items-center md:items-start gap-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-2 text-sm text-foreground">
+              Location
+            </h4>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.google.com"
+              className="hover:text-foreground transition-colors text-center md:text-left"
+            >
+              {businessAddress}
             </Link>
           </div>
         </div>

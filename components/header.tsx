@@ -97,7 +97,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden items-center gap-8 md:flex">
-              {lpNavItems.map((item) => (
+              {lpNavItems.slice(0, 3).map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navToElement(item.id)}
@@ -137,7 +137,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
               className={`border-t py-4 md:hidden ${isLight ? "border-zinc-200" : "border-white/20"}`}
             >
               <nav className="flex flex-col gap-4">
-                {lpNavItems.map((item) => (
+                {lpNavItems.slice(0, 3).map((item) => (
                   <button
                     key={item.id}
                     onClick={() => navToElement(item.id)}
@@ -146,6 +146,12 @@ export default function Header({ variant = "dark" }: HeaderProps) {
                     {item.label}
                   </button>
                 ))}
+                <RainbowButton
+                  variant={isLight ? "default" : "outline"}
+                  onClick={() => navToElement("booking")}
+                >
+                  Improve Grades Now
+                </RainbowButton>
               </nav>
             </div>
           )}

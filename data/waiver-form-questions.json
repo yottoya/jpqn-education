@@ -1,0 +1,114 @@
+[
+  {
+    "section_id": "identification",
+    "description": "Please type the date, your name, and the student's name along with their upcoming grade level.",
+    "fields": [
+      { "id": "date", "type": "date", "label": "Date", "required": true },
+      {
+        "id": "parent_name",
+        "type": "text",
+        "label": "Parent Name",
+        "placeholder": "Full Name",
+        "required": true
+      },
+      {
+        "id": "student_name",
+        "type": "text",
+        "label": "Student Name",
+        "placeholder": "Child's Full Name",
+        "required": true
+      },
+      {
+        "id": "grade_level",
+        "type": "text",
+        "label": "Upcoming Grade Level",
+        "placeholder": "e.g. 4th Grade",
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "academic_consent",
+    "fields": [
+      {
+        "id": "academic_tutoring",
+        "type": "checkbox",
+        "label": "I understand that my child will participate in academic tutoring which may include group and individual instruction, use of educational software, and online learning tools.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "risk_assumption",
+    "fields": [
+      {
+        "id": "risk_acknowledgment",
+        "type": "checkbox",
+        "label": "I acknowledge that while safety precautions are taken, there are inherent risks, and I voluntarily assume those risks on behalf of my child.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "liability_release",
+    "fields": [
+      {
+        "id": "liability_waiver",
+        "type": "checkbox",
+        "label": "I, the undersigned parent/guardian (or adult participant), voluntarily enroll in JPQN Education programs. I understand that educational activities may involve movement, games, crafts, and other interactive elements. I assume all risks associated with participation and hereby release, discharge, and hold harmless JPQN Education, its owners, staff, instructors, and affiliates from any and all liability, claims, demands, or causes of action arising out of or related to participation in any programs, except in the event of proven gross negligence or willful misconduct by JPQN Education Group or its staff.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "medical_consent",
+    "fields": [
+      {
+        "id": "medical_authorization",
+        "type": "checkbox",
+        "label": "In the event of an illness, injury, or medical emergency involving my child, I authorize the staff of JPQN Education to administer basic first aid and over-the-counter medications (such as cold medicine, allergy medication, eye drops, or similar non-prescription remedies) as reasonably necessary. I further authorize JPQN Education staff to seek emergency medical treatment, including calling 911 or transporting my child to a medical facility if needed. I agree to be fully responsible for any medical costs incurred.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "media_release",
+    "fields": [
+      {
+        "id": "media_permission",
+        "type": "radio",
+        "label": "I grant permission for my child's image or academic success story to be used on JPQN Education website.",
+        "options": ["Yes", "No"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "cancellation_policy",
+    "fields": [
+      {
+        "id": "fee_agreement",
+        "type": "checkbox",
+        "label": "Please notify us at least 2 hours in advance if you need to cancel a tutoring/speech session. Cancellations made 1 hour or less before the scheduled session will be charged a $40 fee. Fee waivers are considered on a case-by-case basis at the tutor’s discretion.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "online_learning_consent",
+    "fields": [
+      {
+        "id": "third_party_tools",
+        "type": "checkbox",
+        "label": "I understand that online learning may involve use of third-party tools (e.g., Zoom, Google Classroom), and I consent to my child's participation.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  }
+]

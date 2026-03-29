@@ -15,6 +15,7 @@ import {
 import { BusinessInfo } from "../data/constants";
 import GHLBookingForm from "@/components/homepage-sections/ghl-booking-frame";
 import Hello from "@/components/homepage-sections/hi-section";
+import WaiverForm from "@/components/waiver-form";
 
 export const metadata: Metadata = {
   title: BusinessInfo.siteTitle,
@@ -38,6 +39,9 @@ export default function Home() {
             Let's Chat
           </h2>
           <GHLBookingForm />
+        </div>
+        <div className="mt-16 mb-16">
+          <WaiverForm />
         </div>
       </section>
     </GsapSectionWrapper>

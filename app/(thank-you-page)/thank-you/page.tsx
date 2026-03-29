@@ -6,6 +6,7 @@ import { MarqueeDemo } from "@/components/review-marquee";
 import { ReviewAvatarCircles } from "@/components/homepage-sections/review-avatars";
 import Link from "next/link";
 import { AuroraTextDemo } from "@/components/homepage-sections/my-aurora-text";
+import { reviewData } from "@/components/homepage-sections/review-avatars";
 
 const pageData = {
   title: "Thank You!",
@@ -64,9 +65,6 @@ export default function Page() {
         {/* Reviews Section - Fixed spacing */}
         <div className="mt-12 lg:mt-16 px-4 sm:px-0">
           <ReviewAvatarCircles />
-          <span className="italic text-sm sm:text-base text-slate-500 block mt-2">
-            Over 35 Happy Parents!
-          </span>
         </div>
 
         {/* Marquee */}

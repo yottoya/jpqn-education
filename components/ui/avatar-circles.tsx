@@ -6,6 +6,7 @@ export type Avatar = {
   who?: string;
   profileUrl: string;
   reviewUrl: string;
+  body?: string;
 };
 interface AvatarCirclesProps {
   className?: string;

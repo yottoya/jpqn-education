@@ -12,6 +12,8 @@ export const BusinessInfo = {
     "Empowering children with adapative tutoring that nurtures curiosity, builds foundational skills, and honors every learner's individuality.",
 };
 
+export const businessAddress = `${BusinessInfo.address.street} ${BusinessInfo.address.city}, ${BusinessInfo.address.state} ${BusinessInfo.address.zip}`;
+
 export const lpNavItems = [
   { id: "about", label: "About" },
   { id: "services", label: "Services" },
