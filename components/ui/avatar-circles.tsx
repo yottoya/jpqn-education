@@ -1,15 +1,16 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-interface Avatar {
-  imageUrl: string
-  profileUrl: string
-}
+export type Avatar = {
+  who?: string;
+  profileUrl: string;
+  reviewUrl: string;
+};
 interface AvatarCirclesProps {
-  className?: string
-  numPeople?: number
-  avatarUrls: Avatar[]
+  className?: string;
+  numPeople?: number;
+  avatarUrls: Avatar[];
 }
 
 export const AvatarCircles = ({
@@ -22,14 +23,14 @@ export const AvatarCircles = ({
       {avatarUrls.map((url, index) => (
         <a
           key={index}
-          href={url.profileUrl}
+          href={url.reviewUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
           <img
             key={index}
             className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-            src={url.imageUrl}
+            src={url.profileUrl}
             width={40}
             height={40}
             alt={`Avatar ${index + 1}`}
@@ -45,5 +46,5 @@ export const AvatarCircles = ({
         </a>
       )}
     </div>
-  )
-}
+  );
+};

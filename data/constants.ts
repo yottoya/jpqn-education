@@ -7,6 +7,7 @@ export const BusinessInfo = {
     zip: 77042,
   },
   phoneNumber: "+18328558092",
+  email: "julianguyen24@yahoo.com",
   siteDescription:
     "Empowering children with adapative tutoring that nurtures curiosity, builds foundational skills, and honors every learner's individuality.",
 };

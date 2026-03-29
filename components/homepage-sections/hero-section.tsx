@@ -6,6 +6,7 @@ import { RainbowButton } from "../ui/rainbow-button";
 import { CRainbowButton } from "../c-rainbow-button";
 import { TextAnimate } from "../ui/text-animate";
 import { ReviewAvatarCircles } from "./review-avatars";
+import Link from "next/link";
 
 const myFont = localFont({
   src: "../../fonts/EraserRegular.ttf",
@@ -60,7 +61,17 @@ export function HeroSection({ className }: HeroSectionProps) {
       <div className="relative z-10 w-full max-w-5xl px-4 sm:px-6 flex flex-col items-center text-center">
         {/* Shine Badge - Reduced margin to keep it tight */}
         <div className="mb-4 md:mb-8">
-          <FiveStarShine />
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={
+              "https://www.google.com/maps/place/JPQN+Education/@29.7364896,-95.5442889,17z/data=!4m8!3m7!1s0x8640c301294f769d:0xbdbd1288e19bdb74!8m2!3d29.736485!4d-95.541714!9m1!1b1!16s%2Fg%2F11z3y4zb0l?entry=ttu&g_ep=EgoyMDI2MDMyNC4wIKXMDSoASAFQAw%3D%3D"
+            }
+          >
+            <div className="hover:scale-105">
+              <FiveStarShine />
+            </div>
+          </Link>
         </div>
 
         {/* Headline */}
@@ -91,16 +102,18 @@ export function HeroSection({ className }: HeroSectionProps) {
         </h1>
 
         {/* Tagline */}
-        <p
-          className={`${myFont.className} pt-6 text-white mx-auto mt-4 md:mt-6 
+        <>
+          <p
+            className={`${myFont.className} pt-6 text-white mx-auto mt-4 md:mt-6 
             max-w-70 xs:max-w-md md:max-w-2xl 
             text-base sm:text-lg md:text-2xl 
             opacity-90 leading-relaxed`}
-        >
-          <TextAnimate animation="slideUp" by="word" delay={2} duration={3}>
-            {pageData.tagline}
-          </TextAnimate>
-        </p>
+          >
+            <TextAnimate animation="slideUp" by="word" delay={2} duration={3}>
+              {pageData.tagline}
+            </TextAnimate>
+          </p>
+        </>
         <ReviewAvatarCircles />
 
         {/* Button */}
