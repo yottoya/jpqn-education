@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -20,7 +19,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+type Field =
+  | { id: string; type: "date"; label: string; required: boolean }
+  | { id: string; type: "text"; label: string; placeholder: string; required: boolean }
+  | { id: string; type: "checkbox"; label: string; options: string[]; required: boolean }
+  | { id: string; type: "radio"; label: string; options: string[]; required: boolean };
+
+type Section = {
+  section_id: string;
+  description?: string;
+  fields: Field[];
+};
+
 import waiverData from "@/data/waiver-form-questions.json";
+
+const data = waiverData as Section[];
 
 export default function WaiverForm() {
   const form = useForm({
@@ -37,7 +50,6 @@ export default function WaiverForm() {
       fee_agreement: false,
       third_party_tools: false,
     },
-    validatorAdapter: zodValidator(),
     onSubmit: async ({ value }) => {
       console.log("Form Submitted:", value);
     },
@@ -60,7 +72,7 @@ export default function WaiverForm() {
         }}
         className="space-y-10"
       >
-        {waiverData.map((section) => (
+        {data.map((section) => (
           <div key={section.section_id} className="space-y-6">
             {section.description && (
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -76,9 +88,7 @@ export default function WaiverForm() {
                   validators={{
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
-                        ? z.literal(true, {
-                            errorMap: () => ({ message: "Required" }),
-                          })
+                        ? z.boolean().refine(val => val === true, "Required")
                         : fieldData.type === "date"
                           ? z.date()
                           : z.string().min(1, "Required")
@@ -127,12 +137,12 @@ export default function WaiverForm() {
                           <Label htmlFor={fieldData.id}>
                             {fieldData.label}
                           </Label>
-                          <Input
-                            id={fieldData.id}
-                            placeholder={fieldData.placeholder}
-                            value={field.state.value as string}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                          />
+                           <Input
+                             id={fieldData.id}
+                             placeholder={fieldData.placeholder}
+                             value={field.state.value as string}
+                             onChange={(e) => field.handleChange(e.target.value)}
+                           />
                         </div>
                       )}
 

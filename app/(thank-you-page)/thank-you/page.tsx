@@ -6,7 +6,6 @@ import { MarqueeDemo } from "@/components/review-marquee";
 import { ReviewAvatarCircles } from "@/components/homepage-sections/review-avatars";
 import Link from "next/link";
 import { AuroraTextDemo } from "@/components/homepage-sections/my-aurora-text";
-import { reviewData } from "@/components/homepage-sections/review-avatars";
 
 const pageData = {
   title: "Thank You!",
