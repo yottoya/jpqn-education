@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import services from "@/data/services.json";
+import { Badge } from "../ui/badge";
 
 export function ServicesSection() {
   return (
@@ -15,6 +16,7 @@ export function ServicesSection() {
             <Card>
               <CardHeader>
                 <CardTitle>{s.name}</CardTitle>
+                <Badge>{s.type}</Badge>
               </CardHeader>
               <CardContent>{s.description}</CardContent>
             </Card>
