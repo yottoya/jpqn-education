@@ -367,12 +367,12 @@ export default function WaiverInquiryForm() {
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-muted-foreground/30",
                   )}
-                  onClick={() => toggleService(svc.id)}
                 >
                   <Checkbox
                     id={`service-${svc.id}`}
                     checked={selectedServiceIds.has(svc.id)}
-                    className="mt-0.5 pointer-events-none"
+                    onCheckedChange={() => toggleService(svc.id)}
+                    className="mt-0.5"
                   />
                   <div className="space-y-1">
                     <Label

@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS "waiver_inquiries" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"date" timestamp NOT NULL,
+	"parent_name" varchar(255) NOT NULL,
+	"parent_email" varchar(255) NOT NULL,
+	"student_name" varchar(255) NOT NULL,
+	"grade_level" varchar(50) NOT NULL,
+	"selected_services" text,
+	"academic_tutoring" boolean DEFAULT false NOT NULL,
+	"risk_acknowledgment" boolean DEFAULT false NOT NULL,
+	"liability_waiver" boolean DEFAULT false NOT NULL,
+	"medical_authorization" boolean DEFAULT false NOT NULL,
+	"media_permission" varchar(3) NOT NULL,
+	"fee_agreement" boolean DEFAULT false NOT NULL,
+	"third_party_tools" boolean DEFAULT false NOT NULL,
+	"academic_responsibility_disclaimer" boolean DEFAULT false NOT NULL,
+	"speech_and_communication_waiver" boolean DEFAULT false NOT NULL,
+	"payment_terms" boolean DEFAULT false NOT NULL,
+	"signature_data_url" text
+);

@@ -13,7 +13,6 @@ import {
 } from "@/components/homepage-sections";
 
 import { BusinessInfo } from "../data/constants";
-import GHLBookingForm from "@/components/homepage-sections/ghl-booking-frame";
 import Hello from "@/components/homepage-sections/hi-section";
 
 export const metadata: Metadata = {
@@ -32,14 +31,6 @@ export default function Home() {
       <Vision />
       <ServicesSection />
       <PolicySection />
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 id="booking" className="text-3xl font-bold text-center mb-8">
-            Let's Chat
-          </h2>
-          <GHLBookingForm />
-        </div>
-      </section>
     </GsapSectionWrapper>
   );
 }
