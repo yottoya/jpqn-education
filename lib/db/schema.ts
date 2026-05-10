@@ -3,7 +3,6 @@ import {
   serial,
   text,
   timestamp,
-  integer,
   boolean,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -22,9 +21,7 @@ export const waiverInquiries = pgTable("waiver_inquiries", {
   studentName: varchar("student_name", { length: 255 }).notNull(),
   gradeLevel: varchar("grade_level", { length: 50 }).notNull(),
 
-  selectedService: varchar("selected_service", { length: 255 }),
-  weeklyHours: integer("weekly_hours"),
-  weeklyRate: integer("weekly_rate"),
+  selectedServices: text("selected_services"),
 
   academicTutoring: boolean("academic_tutoring").default(false).notNull(),
   riskAcknowledgment: boolean("risk_acknowledgment").default(false).notNull(),

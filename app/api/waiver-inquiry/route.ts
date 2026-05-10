@@ -3,9 +3,14 @@ import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { waiverInquiries } from "@/lib/db/schema";
 import { Resend } from "resend";
+import services from "@/data/services.json";
 
 const mainFromEmail = process.env.MAIN_FROM_EMAIL_ADDRESS || "julia@jpqnedu.org";
 const businessEmail = "julia@jpqnedu.org";
+
+const SERVICE_LABEL_MAP = Object.fromEntries(
+  services.map((s) => [s.id, s.label]),
+);
 
 const inquirySchema = z.object({
   date: z.string().or(z.date()).transform((v) => new Date(v)),
@@ -14,9 +19,7 @@ const inquirySchema = z.object({
   student_name: z.string().min(1, "Student name is required"),
   grade_level: z.string().min(1, "Grade level is required"),
 
-  selected_service_id: z.string().optional(),
-  weekly_hours: z.number().int().min(1).max(5).optional(),
-  weekly_rate: z.number().int().optional(),
+  selected_service_ids: z.array(z.string()).optional(),
 
   academic_tutoring: z.boolean(),
   risk_acknowledgment: z.boolean(),
@@ -35,24 +38,13 @@ const inquirySchema = z.object({
 const BUSINESS_ADDRESS =
   "9801 Westheimer Rd, Suite 429, Houston, TX 77042";
 
-const SERVICES: Record<string, string> = {
-  "academic-elementary": "Academic Support – Elementary",
-  "academic-middle": "Academic Support – Middle",
-  "speech-support": "Speech Support",
-  esl: "ESL",
-  "online-support": "Online Support",
-  "academic-learning-differences": "Academic Support – Learning Differences",
-};
-
 function buildParentEmailHtml(data: z.infer<typeof inquirySchema>) {
-  const serviceLabel = data.selected_service_id
-    ? SERVICES[data.selected_service_id] || data.selected_service_id
-    : "N/A";
-  const weeklyInfo =
-    data.weekly_hours && data.weekly_rate
-      ? `<p><strong>Weekly Hours:</strong> ${data.weekly_hours} hrs/week</p>
-         <p><strong>Weekly Rate:</strong> $${data.weekly_rate}</p>`
-      : "";
+  const serviceLabels = (data.selected_service_ids ?? [])
+    .map((id) => SERVICE_LABEL_MAP[id] || id)
+    .join(", ");
+  const serviceInfo = serviceLabels
+    ? `<p><strong>Selected Services:</strong> ${serviceLabels}</p>`
+    : "";
 
   return `<!DOCTYPE html>
 <html>
@@ -64,8 +56,7 @@ function buildParentEmailHtml(data: z.infer<typeof inquirySchema>) {
   <p><strong>Date:</strong> ${data.date.toLocaleDateString()}</p>
   <p><strong>Student:</strong> ${data.student_name}</p>
   <p><strong>Grade Level:</strong> ${data.grade_level}</p>
-  <p><strong>Service:</strong> ${serviceLabel}</p>
-  ${weeklyInfo}
+  ${serviceInfo}
   <hr style="border:none;border-top:1px solid #e5e7eb;" />
   <p><strong>Next Step:</strong> Please schedule your first session using our booking calendar.</p>
   <p>We'll review your information and reach out if we have any questions. You can also reach us at ${businessEmail} or visit us at:</p>
@@ -76,14 +67,13 @@ function buildParentEmailHtml(data: z.infer<typeof inquirySchema>) {
 }
 
 function buildBusinessEmailHtml(data: z.infer<typeof inquirySchema>) {
-  const serviceLabel = data.selected_service_id
-    ? SERVICES[data.selected_service_id] || data.selected_service_id
-    : "N/A";
+  const serviceLabels = (data.selected_service_ids ?? [])
+    .map((id) => SERVICE_LABEL_MAP[id] || id)
+    .join(", ");
+  const serviceInfo = serviceLabels
+    ? `<p><strong>Selected Services:</strong> ${serviceLabels}</p>`
+    : "<p><strong>Selected Services:</strong> None</p>";
   const checkboxLabel = (val: boolean) => (val ? "✓ Agreed" : "✗ Not agreed");
-  const weeklyInfo =
-    data.weekly_hours && data.weekly_rate
-      ? `<p><strong>Weekly Hours:</strong> ${data.weekly_hours} hrs/week | <strong>Rate:</strong> $${data.weekly_rate}/week</p>`
-      : "";
 
   return `<!DOCTYPE html>
 <html>
@@ -99,8 +89,7 @@ function buildBusinessEmailHtml(data: z.infer<typeof inquirySchema>) {
   <p><strong>Grade Level:</strong> ${data.grade_level}</p>
   <hr style="border:none;border-top:1px solid #e5e7eb;" />
   <h3>Package</h3>
-  <p><strong>Service:</strong> ${serviceLabel}</p>
-  ${weeklyInfo}
+  ${serviceInfo}
   <hr style="border:none;border-top:1px solid #e5e7eb;" />
   <h3>Waiver Agreements</h3>
   <ul style="list-style:none;padding:0;">
@@ -135,10 +124,6 @@ export async function POST(request: NextRequest) {
 
     const data = parsed.data;
 
-    const serviceLabel = data.selected_service_id
-      ? SERVICES[data.selected_service_id] || data.selected_service_id
-      : null;
-
     const db = getDb();
 
     const [inserted] = await db
@@ -149,9 +134,7 @@ export async function POST(request: NextRequest) {
         parentEmail: data.parent_email,
         studentName: data.student_name,
         gradeLevel: data.grade_level,
-        selectedService: serviceLabel,
-        weeklyHours: data.weekly_hours ?? null,
-        weeklyRate: data.weekly_rate ?? null,
+        selectedServices: JSON.stringify(data.selected_service_ids ?? []),
         academicTutoring: data.academic_tutoring,
         riskAcknowledgment: data.risk_acknowledgment,
         liabilityWaiver: data.liability_waiver,

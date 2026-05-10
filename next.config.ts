@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     "@opennextjs/cloudflare",
     "@neondatabase/serverless",
     "resend",
+    "stripe",
   ],
 };
 

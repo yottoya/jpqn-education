@@ -13,9 +13,7 @@ async function migrate() {
       parent_email VARCHAR(255) NOT NULL,
       student_name VARCHAR(255) NOT NULL,
       grade_level VARCHAR(50) NOT NULL,
-      selected_service VARCHAR(255),
-      weekly_hours INTEGER,
-      weekly_rate INTEGER,
+      selected_services TEXT,
       academic_tutoring BOOLEAN DEFAULT FALSE NOT NULL,
       risk_acknowledgment BOOLEAN DEFAULT FALSE NOT NULL,
       liability_waiver BOOLEAN DEFAULT FALSE NOT NULL,
@@ -30,7 +28,29 @@ async function migrate() {
     );
   `;
 
-  console.log("Migration complete: waiver_inquiries table created.");
+  await sql`
+    ALTER TABLE waiver_inquiries
+    ADD COLUMN IF NOT EXISTS selected_services TEXT;
+  `;
+
+  await sql`
+    ALTER TABLE waiver_inquiries
+    DROP COLUMN IF EXISTS selected_service;
+  `;
+
+  await sql`
+    ALTER TABLE waiver_inquiries
+    DROP COLUMN IF EXISTS weekly_hours;
+  `;
+
+  await sql`
+    ALTER TABLE waiver_inquiries
+    DROP COLUMN IF EXISTS weekly_rate;
+  `;
+
+  console.log(
+    "Migration complete: waiver_inquiries table updated with selected_services (TEXT).",
+  );
   process.exit(0);
 }
 

@@ -20,15 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import SignaturePad from "@/components/signature-pad";
-import { BusinessInfo } from "@/data/constants";
 import waiverData from "@/data/waiver-form-questions.json";
 import services from "@/data/services.json";
 
@@ -76,8 +68,6 @@ const sectionsAfter =
 const identificationSection =
   identificationIndex >= 0 ? data[identificationIndex] : null;
 
-const hourOptions = [1, 2, 3, 4, 5] as const;
-
 type MediaPermission = "Yes" | "No";
 
 interface FormValues {
@@ -101,17 +91,23 @@ interface FormValues {
 export default function WaiverInquiryForm() {
   const router = useRouter();
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
-  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
-  const [weeklyHours, setWeeklyHours] = useState<number>(4);
+  const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedService = services.find((s) => s.id === selectedServiceId);
-  const weeklyRate = selectedService
-    ? selectedService.weekly_rates[
-        String(weeklyHours) as keyof typeof selectedService.weekly_rates
-      ]
-    : null;
+  const toggleService = (serviceId: string) => {
+    setSelectedServiceIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(serviceId)) {
+        next.delete(serviceId);
+      } else {
+        next.add(serviceId);
+      }
+      return next;
+    });
+  };
 
   const form = useForm({
     defaultValues: {
@@ -142,9 +138,7 @@ export default function WaiverInquiryForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...value,
-            selected_service_id: selectedServiceId,
-            weekly_hours: weeklyHours,
-            weekly_rate: weeklyRate,
+            selected_service_ids: Array.from(selectedServiceIds),
             signature_data_url: signatureDataUrl,
           }),
         });
@@ -361,77 +355,45 @@ export default function WaiverInquiryForm() {
             </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="grid gap-2">
-              <Label>Selected Service</Label>
-              <Select
-                value={selectedServiceId}
-                onValueChange={setSelectedServiceId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a service" />
-                </SelectTrigger>
-                <SelectContent>
-                  {services.map((svc) => (
-                    <SelectItem key={svc.id} value={svc.id}>
+          <div className="space-y-4">
+            <Label>Select Service(s)</Label>
+            <div className="grid gap-4">
+              {services.map((svc) => (
+                <div
+                  key={svc.id}
+                  className={cn(
+                    "flex items-start space-x-3 rounded-lg border p-4 transition-colors cursor-pointer",
+                    selectedServiceIds.has(svc.id)
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-muted-foreground/30",
+                  )}
+                  onClick={() => toggleService(svc.id)}
+                >
+                  <Checkbox
+                    id={`service-${svc.id}`}
+                    checked={selectedServiceIds.has(svc.id)}
+                    className="mt-0.5 pointer-events-none"
+                  />
+                  <div className="space-y-1">
+                    <Label
+                      htmlFor={`service-${svc.id}`}
+                      className="text-sm font-medium cursor-pointer"
+                    >
                       {svc.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {svc.description.slice(0, 120)}…
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-
-            <div className="grid gap-2">
-              <Label>Weekly Hours</Label>
-              <Select
-                value={String(weeklyHours)}
-                onValueChange={(v) => setWeeklyHours(Number(v))}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {hourOptions.map((h) => (
-                    <SelectItem key={h} value={String(h)}>
-                      {h} {h === 1 ? "Hour" : "Hours"} per Week
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {weeklyRate !== null && (
-              <div className="rounded-lg border bg-muted/30 p-4">
-                <p className="text-sm text-muted-foreground">
-                  Rate:{" "}
-                  <span className="text-lg font-bold text-foreground">
-                    ${weeklyRate}
-                  </span>{" "}
-                  per week
-                </p>
-                {selectedService && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {selectedService.package_name} — {selectedService.label}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {!selectedServiceId && (
+            {selectedServiceIds.size > 0 && (
               <p className="text-xs text-muted-foreground">
-                Select a service and hours to see the weekly rate.
+                {selectedServiceIds.size} service
+                {selectedServiceIds.size > 1 ? "s" : ""} selected
               </p>
             )}
-
-            <div className="rounded-lg border bg-muted/30 p-4">
-              <p className="text-sm font-medium">Location</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                JPQN Education Office – {BusinessInfo.address.street}, Suite{" "}
-                {BusinessInfo.address.street.split("Ste ")[1] || "429"},{" "}
-                {BusinessInfo.address.city}, {BusinessInfo.address.state}{" "}
-                {BusinessInfo.address.zip}
-              </p>
-            </div>
           </div>
           <Separator className="opacity-40" />
         </div>
