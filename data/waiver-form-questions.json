@@ -1,9 +1,8 @@
 [
   {
     "section_id": "identification",
-    "description": "Please type the date, your name, and the student's name along with their upcoming grade level.",
+    "description": "Please type your name, email, phone number, and the student's name along with their upcoming grade level.",
     "fields": [
-      { "id": "date", "type": "date", "label": "Date", "required": true },
       {
         "id": "parent_name",
         "type": "text",
@@ -16,6 +15,13 @@
         "type": "text",
         "label": "Parent Email",
         "placeholder": "email@example.com",
+        "required": true
+      },
+      {
+        "id": "phone_number",
+        "type": "text",
+        "label": "Phone Number",
+        "placeholder": "(832) 555-1234",
         "required": true
       },
       {
@@ -64,7 +70,7 @@
       {
         "id": "liability_waiver",
         "type": "checkbox",
-        "label": "I, the undersigned parent/guardian (or adult participant), voluntarily enroll in JPQN Education programs. I understand that educational activities may involve movement, games, crafts, and other interactive elements. I assume all risks associated with participation and hereby release, discharge, and hold harmless JPQN Education, its owners, staff, instructors, and affiliates from any and all liability, claims, demands, or causes of action arising out of or related to participation in any programs, except in the event of proven gross negligence or willful misconduct by JPQN Education Group or its staff.",
+        "label": "I voluntarily enroll in JPQN Education programs.\n\nI understand that educational activities may involve movement, games, crafts, and other interactive elements.\n\nI assume all risks associated with participation and hereby release, discharge, and hold harmless JPQN Education, its owners, staff, instructors, and affiliates from any and all liability, claims, demands, or causes of action arising out of or related to participation in any programs, except in the event of proven gross negligence or willful misconduct by JPQN Education Group or its staff.",
         "options": ["I Agree"],
         "required": true
       }
@@ -76,7 +82,7 @@
       {
         "id": "medical_authorization",
         "type": "checkbox",
-        "label": "In the event of an illness, injury, or medical emergency involving my child, I authorize the staff of JPQN Education to administer basic first aid and over-the-counter medications (such as cold medicine, allergy medication, eye drops, or similar non-prescription remedies) as reasonably necessary. I further authorize JPQN Education staff to seek emergency medical treatment, including calling 911 or transporting my child to a medical facility if needed. I agree to be fully responsible for any medical costs incurred.",
+        "label": "In the event of an illness, injury, or medical emergency involving my child, I authorize the staff of JPQN Education to administer basic first aid and over-the-counter medications (such as cold medicine, allergy medication, eye drops, or similar non-prescription remedies) as reasonably necessary.\n\nI further authorize JPQN Education staff to seek emergency medical treatment, including calling 911 or transporting my child to a medical facility if needed.\n\nI agree to be fully responsible for any medical costs incurred.",
         "options": ["I Agree"],
         "required": true
       }
@@ -100,7 +106,7 @@
       {
         "id": "fee_agreement",
         "type": "checkbox",
-        "label": "Please notify us at least 2 hours in advance if you need to cancel a tutoring/speech session. Cancellations made 1 hour or less before the scheduled session will be charged a $40 fee. Fee waivers are considered on a case-by-case basis at the tutor’s discretion.",
+        "label": "Please notify us at least 2 hours in advance if you need to cancel a tutoring/speech session.\n\nCancellations made 1 hour or less before the scheduled session will be charged a $40 fee.\n\nFee waivers are considered on a case-by-case basis at the tutor's discretion.",
         "options": ["I Agree"],
         "required": true
       }
@@ -124,7 +130,7 @@
       {
         "id": "academic_responsibility_disclaimer",
         "type": "checkbox",
-        "label": "I am committed to providing high-quality instruction, clear explanations, personalized resources, and tools to help your child understand the material and gain confidence. However, I am not responsible for grades, missing assignments, or final academic outcomes. A student’s success depends on the student’s individual effort, consistent practice, completion of schoolwork/JPQN homework, and collaboration between home and school.",
+        "label": "I am committed to providing high-quality instruction, clear explanations, personalized resources, and tools to help your child understand the material and gain confidence.\n\nHowever, I am not responsible for grades, missing assignments, or final academic outcomes.\n\nA student's success depends on the student's individual effort, consistent practice, completion of schoolwork/JPQN homework, and collaboration between home and school.",
         "options": ["I Agree"],
         "required": true
       }
@@ -136,7 +142,7 @@
       {
         "id": "speech_and_communication_waiver",
         "type": "checkbox",
-        "label": "I am committed to providing a patient, supportive, and engaging environment to help nonverbal or minimally verbal children build communication skills, confidence, and the ability to produce sounds through play-based activities and personalized strategies. However, I am not a licensed Speech-Language Pathologist, and this program is not formal speech therapy. Progress in communication depends on many factors, including the child’s individual readiness that day, consistent attendance and practice, home reinforcement, and collaboration with parents, school, and any licensed therapists or specialists the child may be working with. My role is to support your child’s confidence and communication efforts in a nurturing space, celebrating every small step along the way.",
+        "label": "I am committed to providing a patient, supportive, and engaging environment to help nonverbal or minimally verbal children build communication skills, confidence, and the ability to produce sounds through play-based activities and personalized strategies.\n\nHowever, I am not a licensed Speech-Language Pathologist, and this program is not formal speech therapy.\n\nProgress in communication depends on many factors, including the child's individual readiness that day, consistent attendance and practice, home reinforcement, and collaboration with parents, school, and any licensed therapists or specialists the child may be working with.\n\nMy role is to support your child's confidence and communication efforts in a nurturing space, celebrating every small step along the way.",
         "options": ["I Agree"],
         "required": true
       }
@@ -148,7 +154,7 @@
       {
         "id": "payment_terms",
         "type": "checkbox",
-        "label": "- Payment is due at the beginning of each week or month.- Accepted payment methods: Cash, Check, or Zelle. - A minimum of 4 hours per week commitment is strongly recommended for noticeable progress.",
+        "label": "Payment is due at the beginning of each week or month.\n\nAccepted payment methods: Cash, Check, or Zelle.\n\nA minimum of 4 hours per week commitment is strongly recommended for noticeable progress.",
         "options": ["I Agree"],
         "required": true
       }

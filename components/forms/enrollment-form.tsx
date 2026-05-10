@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BusinessInfo } from "@/data/constants";
+import zelleQr from "@/assets/zelle-qr-code.jpg";
 
 interface ServiceWithRates {
   id: string;
@@ -23,6 +24,7 @@ interface ServiceWithRates {
 interface EnrollmentData {
   parent_name: string;
   parent_email: string;
+  phone_number: string | null;
   student_name: string;
   grade_level: string;
   selected_services: ServiceWithRates[];
@@ -34,13 +36,18 @@ interface EnrollmentFormProps {
 
 const hourOptions = [1, 2, 3, 4, 5] as const;
 
+function formatE164ToUS(e164: string): string {
+  const cleaned = e164.replace(/[^\d+]/g, "");
+  if (!cleaned.startsWith("+1")) return e164;
+  const digits = cleaned.slice(2);
+  if (digits.length !== 10 || !/^\d{10}$/.test(digits)) return e164;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+}
+
 export default function EnrollmentForm({ data }: EnrollmentFormProps) {
-  const router = useRouter();
   const [hoursPerService, setHoursPerService] = useState<
     Record<string, number>
   >({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const setHours = (serviceId: string, hours: number) => {
     setHoursPerService((prev) => ({ ...prev, [serviceId]: hours }));
@@ -65,40 +72,6 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
     return lines;
   }, [data.selected_services, hoursPerService]);
 
-  const handleCheckout = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          line_items: data.selected_services.map((svc) => ({
-            service_id: svc.id,
-            hours: hoursPerService[svc.id] || 4,
-          })),
-          parent_email: data.parent_email,
-          student_name: data.student_name,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => null);
-        throw new Error(errData?.error || "Failed to create checkout session");
-      }
-
-      const { url } = await res.json();
-      router.push(url);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="max-w-2xl mx-auto py-12 px-6">
       <div className="text-center mb-10">
@@ -109,7 +82,6 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
       </div>
 
       <div className="space-y-10">
-        {/* Parent Information — read-only */}
         <div className="space-y-6">
           <h2 className="text-lg font-semibold">Parent Information</h2>
           <div className="grid gap-4">
@@ -125,11 +97,18 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
                 className="opacity-60"
               />
             </div>
+            <div className="grid gap-2">
+              <Label>Phone Number</Label>
+              <Input
+                value={data.phone_number ? formatE164ToUS(data.phone_number) : "N/A"}
+                disabled
+                className="opacity-60"
+              />
+            </div>
           </div>
         </div>
         <Separator className="opacity-40" />
 
-        {/* Student Information — read-only */}
         <div className="space-y-6">
           <h2 className="text-lg font-semibold">Student Information</h2>
           <div className="grid gap-4">
@@ -153,7 +132,6 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
         </div>
         <Separator className="opacity-40" />
 
-        {/* Package Details — read-only services, editable hours */}
         <div className="space-y-6">
           <h2 className="text-lg font-semibold">Package Details</h2>
 
@@ -186,7 +164,6 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
             </div>
           ))}
 
-          {/* Rate Summary */}
           <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
             <p className="text-sm font-medium">Weekly Rate Summary</p>
             {weeklyTotal.map((line, i) => (
@@ -206,19 +183,34 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
           </div>
         </div>
 
-        {error && (
-          <p className="text-sm font-medium text-destructive text-center">
-            {error}
+        <div className="rounded-lg border p-6 space-y-4 text-center">
+          <h2 className="text-lg font-semibold">Pay with Zelle</h2>
+          <p className="text-sm text-muted-foreground">
+            Send <strong>${totalRate} per week</strong> via Zelle to:
           </p>
-        )}
-
-        <Button
-          onClick={handleCheckout}
-          disabled={isSubmitting || data.selected_services.length === 0}
-          className="w-full"
-        >
-          {isSubmitting ? "Redirecting to Stripe..." : `Pay $${totalRate} per Week`}
-        </Button>
+          <div className="space-y-1 text-sm">
+            <p>
+              <strong>Phone:</strong>{" "}
+              {formatE164ToUS(BusinessInfo.phoneNumber)}
+            </p>
+            <p>
+              <strong>Email:</strong> {BusinessInfo.email}
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <Image
+              src={zelleQr}
+              alt="Zelle QR Code"
+              width={256}
+              height={256}
+              className="rounded-lg border"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Scan the QR code with your banking app or use the phone/email above
+            to complete your Zelle payment.
+          </p>
+        </div>
       </div>
     </div>
   );

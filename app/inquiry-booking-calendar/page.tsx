@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function InquiryBookingCalendarPage() {
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
+    <div className="min-h-screen pt-36 pb-16 px-4">
       <div className="max-w-3xl mx-auto text-center mb-8">
         <h1 className="text-2xl font-bold tracking-tight">
-          Book Your First Session
+          Book Your Sessions
         </h1>
         <p className="text-muted-foreground mt-2">
           Select a date and time that works for you.

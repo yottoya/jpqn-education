@@ -40,6 +40,7 @@ async function getEnrollmentData(email: string) {
   return {
     parent_name: inquiry.parentName,
     parent_email: inquiry.parentEmail,
+    phone_number: inquiry.phoneNumber,
     student_name: inquiry.studentName,
     grade_level: inquiry.gradeLevel,
     selected_services: selectedServices,

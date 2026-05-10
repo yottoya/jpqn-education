@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import Stripe from "stripe";
 import { getDb } from "@/lib/db";
 import { waiverInquiries } from "@/lib/db/schema";
 import { Resend } from "resend";
@@ -16,6 +17,7 @@ const inquirySchema = z.object({
   date: z.string().or(z.date()).transform((v) => new Date(v)),
   parent_name: z.string().min(1, "Parent name is required"),
   parent_email: z.string().email("Valid email is required"),
+  phone_number: z.string().optional(),
   student_name: z.string().min(1, "Student name is required"),
   grade_level: z.string().min(1, "Grade level is required"),
 
@@ -31,8 +33,6 @@ const inquirySchema = z.object({
   academic_responsibility_disclaimer: z.boolean(),
   speech_and_communication_waiver: z.boolean(),
   payment_terms: z.boolean(),
-
-  signature_data_url: z.string().optional(),
 });
 
 const BUSINESS_ADDRESS =
@@ -83,6 +83,7 @@ function buildBusinessEmailHtml(data: z.infer<typeof inquirySchema>) {
   <h3>Parent/Guardian</h3>
   <p><strong>Name:</strong> ${data.parent_name}</p>
   <p><strong>Email:</strong> ${data.parent_email}</p>
+  <p><strong>Phone:</strong> ${data.phone_number || "N/A"}</p>
   <hr style="border:none;border-top:1px solid #e5e7eb;" />
   <h3>Student</h3>
   <p><strong>Name:</strong> ${data.student_name}</p>
@@ -132,6 +133,7 @@ export async function POST(request: NextRequest) {
         date: data.date,
         parentName: data.parent_name,
         parentEmail: data.parent_email,
+        phoneNumber: data.phone_number ?? null,
         studentName: data.student_name,
         gradeLevel: data.grade_level,
         selectedServices: JSON.stringify(data.selected_service_ids ?? []),
@@ -146,7 +148,6 @@ export async function POST(request: NextRequest) {
           data.academic_responsibility_disclaimer,
         speechAndCommunicationWaiver: data.speech_and_communication_waiver,
         paymentTerms: data.payment_terms,
-        signatureDataUrl: data.signature_data_url ?? null,
       })
       .returning();
 
@@ -179,9 +180,37 @@ export async function POST(request: NextRequest) {
       console.error("Email send failures:", errors);
     }
 
+    const origin = request.headers.get("origin") || "https://jpqnedu.org";
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Waiver Inquiry Processing Fee",
+              description: `Inquiry for ${data.student_name}`,
+            },
+            unit_amount: 500,
+          },
+        },
+      ],
+      customer_email: data.parent_email,
+      metadata: {
+        inquiry_id: String(inserted.id),
+        student_name: data.student_name,
+      },
+      success_url: `${origin}/thank-you`,
+      cancel_url: `${origin}/waiver-inquiry`,
+    });
+
     return NextResponse.json({
       success: true,
       id: inserted.id,
+      url: session.url,
     });
   } catch (err) {
     console.error("Waiver inquiry submission error:", err);

@@ -18,6 +18,7 @@ export const waiverInquiries = pgTable("waiver_inquiries", {
   date: timestamp("date").notNull(),
   parentName: varchar("parent_name", { length: 255 }).notNull(),
   parentEmail: varchar("parent_email", { length: 255 }).notNull(),
+  phoneNumber: varchar("phone_number", { length: 30 }),
   studentName: varchar("student_name", { length: 255 }).notNull(),
   gradeLevel: varchar("grade_level", { length: 50 }).notNull(),
 

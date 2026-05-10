@@ -1,0 +1,1 @@
+ALTER TABLE "waiver_inquiries" ADD COLUMN "phone_number" varchar(30);

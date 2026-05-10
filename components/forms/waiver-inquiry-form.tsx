@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,18 +12,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import SignaturePad from "@/components/signature-pad";
 import waiverData from "@/data/waiver-form-questions.json";
 import services from "@/data/services.json";
 
 type Field =
-  | { id: string; type: "date"; label: string; required: boolean }
   | {
       id: string;
       type: "text";
@@ -63,7 +53,7 @@ const sectionsBefore = data.slice(0, identificationIndex);
 const sectionsAfter =
   identificationIndex >= 0
     ? data.slice(identificationIndex + 1)
-    : data.slice(identificationIndex + 1);
+    : [];
 
 const identificationSection =
   identificationIndex >= 0 ? data[identificationIndex] : null;
@@ -74,6 +64,7 @@ interface FormValues {
   date: Date;
   parent_name: string;
   parent_email: string;
+  phone_number: string;
   student_name: string;
   grade_level: string;
   academic_tutoring: boolean;
@@ -90,7 +81,6 @@ interface FormValues {
 
 export default function WaiverInquiryForm() {
   const router = useRouter();
-  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(
     new Set(),
   );
@@ -114,6 +104,7 @@ export default function WaiverInquiryForm() {
       date: new Date(),
       parent_name: "",
       parent_email: "",
+      phone_number: "",
       student_name: "",
       grade_level: "",
       academic_tutoring: false,
@@ -128,7 +119,6 @@ export default function WaiverInquiryForm() {
       payment_terms: false,
     },
     onSubmit: async ({ value }) => {
-      if (!signatureDataUrl) return;
       setIsSubmitting(true);
       setError(null);
 
@@ -139,7 +129,6 @@ export default function WaiverInquiryForm() {
           body: JSON.stringify({
             ...value,
             selected_service_ids: Array.from(selectedServiceIds),
-            signature_data_url: signatureDataUrl,
           }),
         });
 
@@ -148,55 +137,26 @@ export default function WaiverInquiryForm() {
           throw new Error(errData?.error || "Submission failed");
         }
 
-        router.push("/inquiry-booking-calendar");
+        const { url } = await res.json();
+
+        if (url) {
+          router.push(url);
+        } else {
+          setError("No checkout URL returned. Please try again.");
+          setIsSubmitting(false);
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Something went wrong",
         );
-      } finally {
         setIsSubmitting(false);
       }
     },
   });
 
-  const canSubmit =
-    form.state.canSubmit && !!signatureDataUrl && !isSubmitting;
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderField = (fieldData: Field, field: any) => (
     <div className="space-y-4">
-      {fieldData.type === "date" && (
-        <div className="grid gap-2">
-          <Label>{fieldData.label}</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !field.state.value && "text-muted-foreground",
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {field.state.value ? (
-                  format(field.state.value as Date, "PPP")
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={field.state.value as Date}
-                onSelect={(date) => field.handleChange(date ?? new Date())}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-      )}
-
       {fieldData.type === "text" && (
         <div className="grid gap-2">
           <Label htmlFor={fieldData.id}>{fieldData.label}</Label>
@@ -211,7 +171,9 @@ export default function WaiverInquiryForm() {
 
       {fieldData.type === "checkbox" && (
         <div className="space-y-4">
-          <p className="text-sm leading-relaxed">{fieldData.label}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-line">
+            {fieldData.label}
+          </p>
           <div className="pt-4 border-t border-slate-100 flex items-center space-x-3">
             <Checkbox
               id={fieldData.id}
@@ -281,7 +243,6 @@ export default function WaiverInquiryForm() {
         }}
         className="space-y-10"
       >
-        {/* Sections before identification (if any) */}
         {sectionsBefore.map((section) => (
           <div key={section.section_id} className="space-y-6">
             {section.description && (
@@ -298,9 +259,7 @@ export default function WaiverInquiryForm() {
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
                         ? z.boolean().refine((val) => val === true, "Required")
-                        : fieldData.type === "date"
-                          ? z.date()
-                          : z.string().min(1, "Required")
+                        : z.string().min(1, "Required")
                       : undefined,
                   }}
                 // eslint-disable-next-line react/no-children-prop
@@ -312,7 +271,6 @@ export default function WaiverInquiryForm() {
           </div>
         ))}
 
-        {/* Identification section */}
         {identificationSection && (
           <div key={identificationSection.section_id} className="space-y-6">
             {identificationSection.description && (
@@ -329,9 +287,7 @@ export default function WaiverInquiryForm() {
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
                         ? z.boolean().refine((val) => val === true, "Required")
-                        : fieldData.type === "date"
-                          ? z.date()
-                          : z.string().min(1, "Required")
+                        : z.string().min(1, "Required")
                       : undefined,
                   }}
                 // eslint-disable-next-line react/no-children-prop
@@ -343,7 +299,6 @@ export default function WaiverInquiryForm() {
           </div>
         )}
 
-        {/* Package Details section */}
         <div className="space-y-6">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">2. Package Details</h2>
@@ -398,7 +353,6 @@ export default function WaiverInquiryForm() {
           <Separator className="opacity-40" />
         </div>
 
-        {/* Remaining sections after identification */}
         {sectionsAfter.map((section) => (
           <div key={section.section_id} className="space-y-6">
             {section.description && (
@@ -415,9 +369,7 @@ export default function WaiverInquiryForm() {
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
                         ? z.boolean().refine((val) => val === true, "Required")
-                        : fieldData.type === "date"
-                          ? z.date()
-                          : z.string().min(1, "Required")
+                        : z.string().min(1, "Required")
                       : undefined,
                   }}
                 // eslint-disable-next-line react/no-children-prop
@@ -429,36 +381,14 @@ export default function WaiverInquiryForm() {
           </div>
         ))}
 
-        {/* Signature Pad */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">
-            Signature
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Please sign above to confirm your agreement to all terms and
-            conditions.
-          </p>
-          <SignaturePad
-            variant="default"
-            size="md"
-            onSave={(dataUrl) => setSignatureDataUrl(dataUrl)}
-            onChange={(dataUrl) => setSignatureDataUrl(dataUrl)}
-          />
-          {!signatureDataUrl && (
-            <p className="text-xs text-muted-foreground">
-              Signature is required to submit.
-            </p>
-          )}
-        </div>
-
         {error && (
           <p className="text-sm font-medium text-destructive text-center">
             {error}
           </p>
         )}
 
-        <Button type="submit" disabled={!canSubmit} className="w-full">
-          {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? "Submitting..." : "Submit & Pay $5"}
         </Button>
       </form>
     </div>
