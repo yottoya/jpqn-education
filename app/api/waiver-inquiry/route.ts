@@ -4,7 +4,6 @@ import { getDb } from "@/lib/db";
 import { waiverInquiries } from "@/lib/db/schema";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const mainFromEmail = process.env.MAIN_FROM_EMAIL_ADDRESS || "julia@jpqnedu.org";
 const businessEmail = "julia@jpqnedu.org";
 
@@ -167,6 +166,8 @@ export async function POST(request: NextRequest) {
         signatureDataUrl: data.signature_data_url ?? null,
       })
       .returning();
+
+    const resend = new Resend(process.env.RESEND_API_KEY!);
 
     const [parentEmailResult, businessEmailResult] = await Promise.allSettled([
       resend.emails.send({
