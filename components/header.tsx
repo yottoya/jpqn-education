@@ -110,11 +110,8 @@ export default function Header({ variant = "dark" }: HeaderProps) {
 
             {/* CTA Button Desktop */}
             <div className="hidden md:block">
-              <RainbowButton
-                variant={isLight ? "default" : "outline"}
-                onClick={() => navToElement("booking")}
-              >
-                Improve Grades Now
+              <RainbowButton variant={isLight ? "default" : "outline"}>
+                Enroll Your Child Now!
               </RainbowButton>
             </div>
 
@@ -150,7 +147,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
                   variant={isLight ? "default" : "outline"}
                   onClick={() => navToElement("booking")}
                 >
-                  Improve Grades Now
+                  Enroll Your Child Now!
                 </RainbowButton>
               </nav>
             </div>

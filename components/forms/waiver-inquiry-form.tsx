@@ -18,12 +18,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import waiverData from "@/data/waiver-form-questions.json";
 
 type Field =
   | { id: string; type: "date"; label: string; required: boolean }
-  | { id: string; type: "text"; label: string; placeholder: string; required: boolean }
-  | { id: string; type: "checkbox"; label: string; options: string[]; required: boolean }
-  | { id: string; type: "radio"; label: string; options: string[]; required: boolean };
+  | {
+      id: string;
+      type: "text";
+      label: string;
+      placeholder: string;
+      required: boolean;
+    }
+  | {
+      id: string;
+      type: "checkbox";
+      label: string;
+      options: string[];
+      required: boolean;
+    }
+  | {
+      id: string;
+      type: "radio";
+      label: string;
+      options: string[];
+      required: boolean;
+    };
 
 type Section = {
   section_id: string;
@@ -31,11 +50,9 @@ type Section = {
   fields: Field[];
 };
 
-import waiverData from "@/data/waiver-form-questions.json";
-
 const data = waiverData as Section[];
 
-export default function WaiverForm() {
+export default function WaiverInquiryForm() {
   const form = useForm({
     defaultValues: {
       date: new Date(), // Defaults to Now
@@ -49,6 +66,15 @@ export default function WaiverForm() {
       media_permission: "No" as "Yes" | "No",
       fee_agreement: false,
       third_party_tools: false,
+
+      //
+      // TODO: NEED TO IMPLEMENT FULLY
+      academic_responsibility_disclaimer: false,
+      speech_and_communication_waiver: false,
+      payment_terms: false,
+      package_details: false,
+      //
+      //
     },
     onSubmit: async ({ value }) => {
       console.log("Form Submitted:", value);
@@ -59,7 +85,7 @@ export default function WaiverForm() {
     <div className="max-w-2xl mx-auto py-12 px-6">
       <div className="text-center mb-10">
         <h1 className="text-center text-2xl font-bold tracking-tight">
-          Waiver Form
+          Inquiry Form
         </h1>
         <p className="text-muted-foreground">JPQN Education</p>
       </div>
@@ -88,7 +114,7 @@ export default function WaiverForm() {
                   validators={{
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
-                        ? z.boolean().refine(val => val === true, "Required")
+                        ? z.boolean().refine((val) => val === true, "Required")
                         : fieldData.type === "date"
                           ? z.date()
                           : z.string().min(1, "Required")
@@ -137,12 +163,12 @@ export default function WaiverForm() {
                           <Label htmlFor={fieldData.id}>
                             {fieldData.label}
                           </Label>
-                           <Input
-                             id={fieldData.id}
-                             placeholder={fieldData.placeholder}
-                             value={field.state.value as string}
-                             onChange={(e) => field.handleChange(e.target.value)}
-                           />
+                          <Input
+                            id={fieldData.id}
+                            placeholder={fieldData.placeholder}
+                            value={field.state.value as string}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
                         </div>
                       )}
 
@@ -224,7 +250,7 @@ export default function WaiverForm() {
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <Button type="submit" disabled={!canSubmit} className="w-full">
-              {isSubmitting ? "Submitting..." : "Submit Waiver"}
+              {isSubmitting ? "Submitting..." : "Submit Inquiry"}
             </Button>
           )}
         />

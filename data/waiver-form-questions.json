@@ -110,5 +110,41 @@
         "required": true
       }
     ]
+  },
+  {
+    "section_id": "academic_responsibility_disclaimer",
+    "fields": [
+      {
+        "id": "academic_responsibility_disclaimer",
+        "type": "checkbox",
+        "label": "I am committed to providing high-quality instruction, clear explanations, personalized resources, and tools to help your child understand the material and gain confidence. However, I am not responsible for grades, missing assignments, or final academic outcomes. A student’s success depends on the student’s individual effort, consistent practice, completion of schoolwork/JPQN homework, and collaboration between home and school.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "speech_and_communication_waiver",
+    "fields": [
+      {
+        "id": "speech_and_communication_waiver",
+        "type": "checkbox",
+        "label": "I am committed to providing a patient, supportive, and engaging environment to help nonverbal or minimally verbal children build communication skills, confidence, and the ability to produce sounds through play-based activities and personalized strategies. However, I am not a licensed Speech-Language Pathologist, and this program is not formal speech therapy. Progress in communication depends on many factors, including the child’s individual readiness that day, consistent attendance and practice, home reinforcement, and collaboration with parents, school, and any licensed therapists or specialists the child may be working with. My role is to support your child’s confidence and communication efforts in a nurturing space, celebrating every small step along the way.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
+  },
+  {
+    "section_id": "payment_terms",
+    "fields": [
+      {
+        "id": "payment_terms",
+        "type": "checkbox",
+        "label": "- Payment is due at the beginning of each week or month.- Accepted payment methods: Cash, Check, or Zelle. - A minimum of 4 hours per week commitment is strongly recommended for noticeable progress.",
+        "options": ["I Agree"],
+        "required": true
+      }
+    ]
   }
 ]
