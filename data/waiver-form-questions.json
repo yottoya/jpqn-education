@@ -12,6 +12,13 @@
         "required": true
       },
       {
+        "id": "parent_email",
+        "type": "text",
+        "label": "Parent Email",
+        "placeholder": "email@example.com",
+        "required": true
+      },
+      {
         "id": "student_name",
         "type": "text",
         "label": "Student Name",

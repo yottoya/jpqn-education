@@ -1,52 +1,56 @@
 [
   {
+    "id": "academic-elementary",
     "name": "Confidence Builder",
+    "label": "Academic Support – Elementary",
     "type": "Academic Support",
+    "package_name": "Confidence Builder",
     "description": "Build strong foundations with small, steady improvements in reading, math, writing, and other core subjects. Through fun games, friendly competition, and real-life lessons, your child gains confidence and masters fundamentals before moving forward. May provide weekly pickup/drop-off convenience. Any and all milestones are celebrated. Perfect for regular students or homeschoolers who want to catch up or stay ahead.",
-    "sub_packages": [
-      {
-        "name": "Elementary (All subjects)",
-        "package_hourly_rate": 3500,
-        "package_frequency": 4,
-        "drop_in_hourly_rate": 40
-      },
-      {
-        "name": "Middle School (All subjects)",
-        "package_hourly_rate": 4000,
-        "package_frequency": 4,
-        "drop_in_hourly_rate": 6000
-      }
-    ]
+    "weekly_rates": { "1": 45, "2": 85, "3": 120, "4": 150, "5": 175 }
   },
   {
+    "id": "academic-middle",
+    "name": "Confidence Builder",
+    "label": "Academic Support – Middle",
+    "type": "Academic Support",
+    "package_name": "Confidence Builder",
+    "description": "Build strong foundations with small, steady improvements in reading, math, writing, and other core subjects. Through fun games, friendly competition, and real-life lessons, your child gains confidence and masters fundamentals before moving forward. May provide weekly pickup/drop-off convenience. Any and all milestones are celebrated. Perfect for regular students or homeschoolers who want to catch up or stay ahead.",
+    "weekly_rates": { "1": 50, "2": 95, "3": 135, "4": 170, "5": 200 }
+  },
+  {
+    "id": "speech-support",
     "name": "Voice & Confidence",
+    "label": "Speech Support",
     "type": "Speech Support",
+    "package_name": "Voice & Confidence",
     "description": "A gentle, supportive space for non-verbal or minimally verbal children to develop sounds, communication skills, and self-confidence. We use play-based activities, games, and personalized strategies to help your child find their voice at their own pace. Every small sound or breakthrough is celebrated. Ideal for autistic children who need patient, encouraging guidance in a safe environment.",
-    "package_hourly_rate": 4000,
-    "package_frequency": 4,
-    "drop_in_hourly_rate": 6000
+    "weekly_rates": { "1": 60, "2": 130, "3": 180, "4": 220, "5": 260 }
   },
   {
-    "name": "Mastery & Growth Journey",
-    "type": "Academic Support with Learning Differences",
-    "description": "Personalized academic support designed for children with learning differences. We focus on mastering fundamentals first, building confidence, and creating small, achievable wins: never rushing to the next grade level or topic. Lessons incorporate games, real-life examples, and accommodations tailored to your child’s unique needs (ADHD, dyslexia, autism, Down syndrome, and more). You’ll see steady progress while your child feels supported and motivated.",
-    "package_hourly_rate": 6000,
-    "package_frequency": 4,
-    "drop_in_hourly_rate": 100
-  },
-  {
+    "id": "esl",
     "name": "Everyday English Builder",
+    "label": "ESL",
     "type": "ESL",
+    "package_name": "Everyday English Builder",
     "description": "Practical, confidence-building English lessons for adults. We focus on real-life conversation, everyday vocabulary, pronunciation, and skills you can use immediately at work, home, or in the community. Lessons are relaxed, supportive, and progress at your pace with plenty of practice and encouragement along the way.",
-    "package_hourly_rate": 4000,
-    "package_frequency": 4,
-    "drop_in_hourly_rate": 6000
+    "weekly_rates": { "1": 50, "2": 95, "3": 135, "4": 170, "5": 200 }
   },
   {
+    "id": "online-support",
     "name": "Flexible Online Sessions",
+    "label": "Online Support",
     "type": "Online Support",
+    "package_name": "Flexible Online Sessions",
     "description": "Same high-quality, personalized tutoring from the comfort of home. Available for regular academics or ESL at a convenient rate for families who prefer virtual learning or are currently overseas.",
-    "package_hourly_rate": 4000,
-    "package_frequency": 4
+    "weekly_rates": { "1": 50, "2": 95, "3": 135, "4": 170, "5": 200 }
+  },
+  {
+    "id": "academic-learning-differences",
+    "name": "Mastery & Growth Journey",
+    "label": "Academic Support – Learning Differences",
+    "type": "Academic Support with Learning Differences",
+    "package_name": "Mastery & Growth Journey",
+    "description": "Personalized academic support designed for children with learning differences. We focus on mastering fundamentals first, building confidence, and creating small, achievable wins: never rushing to the next grade level or topic. Lessons incorporate games, real-life examples, and accommodations tailored to your child's unique needs (ADHD, dyslexia, autism, Down syndrome, and more). You'll see steady progress while your child feels supported and motivated.",
+    "weekly_rates": { "1": 70, "2": 140, "3": 195, "4": 240, "5": 280 }
   }
 ]
