@@ -10,6 +10,7 @@ import {
   Vision,
   ServicesSection,
   PolicySection,
+  FaqSection,
 } from "@/components/homepage-sections";
 
 import { BusinessInfo } from "../data/constants";
@@ -31,6 +32,7 @@ export default function Home() {
       <Vision />
       <ServicesSection />
       <PolicySection />
+      <FaqSection />
     </GsapSectionWrapper>
   );
 }

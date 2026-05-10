@@ -5,3 +5,4 @@ export * from "./mission-section";
 export * from "./vision-section";
 export * from "./services-section";
 export * from "./policy-section";
+export * from "./faq-section";

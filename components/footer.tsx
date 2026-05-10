@@ -84,7 +84,7 @@ export default function Footer() {
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href="https://www.google.com"
+              href="https://maps.app.goo.gl/SMUhiLYX5gP6zpy59"
               className="hover:text-foreground transition-colors text-center md:text-left"
             >
               {businessAddress}
