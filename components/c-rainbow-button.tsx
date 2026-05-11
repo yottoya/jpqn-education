@@ -19,7 +19,7 @@ export function CRainbowButton({
     <RainbowButton
       size={"lg"}
       variant={"outline"}
-      className={cn("mt-4 w-full", className)}
+      className={cn("mt-4 w-auto text-xl", className)}
       onClick={() => handleNavigate(elementId)}
     >
       {children}

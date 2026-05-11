@@ -137,14 +137,12 @@ export default function Header({ variant = "dark" }: HeaderProps) {
             >
               <nav className="flex flex-col gap-4">
                 {lpNavItems.slice(0, 4).map((item) => (
-                  <Link href={"/sessions-booking-calendar"}>
-                    <button
-                      key={item.id}
-                      className={`text-left text-sm font-medium ${mutedText}`}
-                    >
-                      {item.label}
-                    </button>
-                  </Link>
+                  <button
+                    key={item.id}
+                    className={`text-left text-sm font-medium ${mutedText}`}
+                  >
+                    {item.label}
+                  </button>
                 ))}
                 <Link href="/waiver-inquiry">
                   <RainbowButton variant={isLight ? "default" : "outline"}>

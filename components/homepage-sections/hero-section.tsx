@@ -117,9 +117,9 @@ export function HeroSection({ className }: HeroSectionProps) {
         <ReviewAvatarCircles />
 
         {/* Button */}
-        <div className="mt-4 w-full lg:w-5 flex justify-center">
+        <>
           <CRainbowButton />
-        </div>
+        </>
       </div>
     </section>
   );

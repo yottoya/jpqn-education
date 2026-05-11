@@ -100,7 +100,9 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
             <div className="grid gap-2">
               <Label>Phone Number</Label>
               <Input
-                value={data.phone_number ? formatE164ToUS(data.phone_number) : "N/A"}
+                value={
+                  data.phone_number ? formatE164ToUS(data.phone_number) : "N/A"
+                }
                 disabled
                 className="opacity-60"
               />
@@ -122,11 +124,7 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
             </div>
             <div className="grid gap-2">
               <Label>Grade Level</Label>
-              <Input
-                value={data.grade_level}
-                disabled
-                className="opacity-60"
-              />
+              <Input value={data.grade_level} disabled className="opacity-60" />
             </div>
           </div>
         </div>
@@ -136,10 +134,7 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
           <h2 className="text-lg font-semibold">Package Details</h2>
 
           {data.selected_services.map((svc) => (
-            <div
-              key={svc.id}
-              className="rounded-lg border p-4 space-y-3"
-            >
+            <div key={svc.id} className="rounded-lg border p-4 space-y-3">
               <div>
                 <p className="font-medium text-sm">{svc.label}</p>
               </div>
@@ -167,7 +162,10 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
           <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
             <p className="text-sm font-medium">Weekly Rate Summary</p>
             {weeklyTotal.map((line, i) => (
-              <div key={i} className="flex justify-between text-sm text-muted-foreground">
+              <div
+                key={i}
+                className="flex justify-between text-sm text-muted-foreground"
+              >
                 <span>
                   {line.label} ({line.hours} hr
                   {line.hours > 1 ? "s" : ""})
@@ -190,11 +188,7 @@ export default function EnrollmentForm({ data }: EnrollmentFormProps) {
           </p>
           <div className="space-y-1 text-sm">
             <p>
-              <strong>Phone:</strong>{" "}
-              {formatE164ToUS(BusinessInfo.phoneNumber)}
-            </p>
-            <p>
-              <strong>Email:</strong> {BusinessInfo.email}
+              <strong>Phone:</strong> {formatE164ToUS(BusinessInfo.phoneNumber)}
             </p>
           </div>
           <div className="flex justify-center">
