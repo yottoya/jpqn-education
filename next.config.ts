@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   /* config options here */
   serverExternalPackages: [
     "@opennextjs/cloudflare",
-    "@neondatabase/serverless",
     "resend",
     "stripe",
   ],
