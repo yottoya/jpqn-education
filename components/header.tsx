@@ -97,7 +97,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden items-center gap-8 md:flex">
-              {lpNavItems.slice(0, 4).map((item) => (
+              {lpNavItems.slice(0, 3).map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navToElement(item.id)}
@@ -106,12 +106,20 @@ export default function Header({ variant = "dark" }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
+              <Link
+                href="/session-booking-calendar"
+                className={`text-sm font-medium transition-colors hover:opacity-100 ${mutedText}`}
+              >
+                {lpNavItems[3].label}
+              </Link>
             </nav>
 
             {/* CTA Button Desktop */}
             <div className="hidden md:block">
-              <Link href="/waiver-inquiry">
-                <RainbowButton variant={isLight ? "default" : "outline"}>
+              <Link href="/waiver-inquiry" onClick={() => setMobileMenuOpen(false)}>
+                <RainbowButton
+                  variant={isLight ? "default" : "outline"}
+                >
                   Enroll Your Child Now!
                 </RainbowButton>
               </Link>
@@ -136,15 +144,23 @@ export default function Header({ variant = "dark" }: HeaderProps) {
               className={`border-t py-4 md:hidden ${isLight ? "border-zinc-200" : "border-white/20"}`}
             >
               <nav className="flex flex-col gap-4">
-                {lpNavItems.slice(0, 4).map((item) => (
+                {lpNavItems.slice(0, 3).map((item) => (
                   <button
                     key={item.id}
+                    onClick={() => navToElement(item.id)}
                     className={`text-left text-sm font-medium ${mutedText}`}
                   >
                     {item.label}
                   </button>
                 ))}
-                <Link href="/waiver-inquiry">
+                <Link
+                  href="/session-booking-calendar"
+                  className={`text-left text-sm font-medium ${mutedText}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {lpNavItems[3].label}
+                </Link>
+<Link href="/waiver-inquiry" onClick={() => setMobileMenuOpen(false)}>
                   <RainbowButton variant={isLight ? "default" : "outline"}>
                     Enroll Your Child Now!
                   </RainbowButton>

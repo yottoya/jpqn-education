@@ -58,7 +58,7 @@ export function HeroSection({ className }: HeroSectionProps) {
       </div>
 
       {/* Content Wrapper */}
-      <div className="relative z-10 w-full max-w-5xl px-4 sm:px-6 flex flex-col items-center text-center">
+      <div className="relative z-10 w-full max-w-5xl px-4 sm:px-6 flex flex-col items-center text-center pb-8 md:pb-12">
         {/* Shine Badge - Reduced margin to keep it tight */}
         <div className="mb-4 md:mb-8">
           <Link
@@ -103,7 +103,7 @@ export function HeroSection({ className }: HeroSectionProps) {
 
         {/* Tagline */}
         <>
-          <p
+          <div
             className={`${myFont.className} pt-6 text-white mx-auto mt-4 md:mt-6 
             max-w-70 xs:max-w-md md:max-w-2xl 
             text-base sm:text-lg md:text-2xl 
@@ -112,7 +112,7 @@ export function HeroSection({ className }: HeroSectionProps) {
             <TextAnimate animation="slideUp" by="word" delay={2} duration={3}>
               {pageData.tagline}
             </TextAnimate>
-          </p>
+          </div>
         </>
         <ReviewAvatarCircles />
 
