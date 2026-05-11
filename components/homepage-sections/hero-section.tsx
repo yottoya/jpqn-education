@@ -117,9 +117,9 @@ export function HeroSection({ className }: HeroSectionProps) {
         <ReviewAvatarCircles />
 
         {/* Button */}
-        <>
+        <Link href={"/waiver-inquiry"}>
           <CRainbowButton />
-        </>
+        </Link>
       </div>
     </section>
   );
