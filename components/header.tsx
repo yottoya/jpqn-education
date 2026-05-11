@@ -97,7 +97,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden items-center gap-8 md:flex">
-              {lpNavItems.slice(0, 3).map((item) => (
+              {lpNavItems.slice(0, 4).map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navToElement(item.id)}
@@ -136,19 +136,18 @@ export default function Header({ variant = "dark" }: HeaderProps) {
               className={`border-t py-4 md:hidden ${isLight ? "border-zinc-200" : "border-white/20"}`}
             >
               <nav className="flex flex-col gap-4">
-                {lpNavItems.slice(0, 3).map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => navToElement(item.id)}
-                    className={`text-left text-sm font-medium ${mutedText}`}
-                  >
-                    {item.label}
-                  </button>
+                {lpNavItems.slice(0, 4).map((item) => (
+                  <Link href={"/sessions-booking-calendar"}>
+                    <button
+                      key={item.id}
+                      className={`text-left text-sm font-medium ${mutedText}`}
+                    >
+                      {item.label}
+                    </button>
+                  </Link>
                 ))}
                 <Link href="/waiver-inquiry">
-                  <RainbowButton
-                    variant={isLight ? "default" : "outline"}
-                  >
+                  <RainbowButton variant={isLight ? "default" : "outline"}>
                     Enroll Your Child Now!
                   </RainbowButton>
                 </Link>

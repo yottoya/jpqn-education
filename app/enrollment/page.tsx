@@ -1,59 +1,51 @@
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import EnrollmentForm from "@/components/forms/enrollment-form";
-import { getDb } from "@/lib/db";
-import { waiverInquiries } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import services from "@/data/services.json";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Enrollment — JPQN Education",
-  description: "Review and finalize your enrollment with JPQN Education.",
-};
-
-const SERVICE_MAP = new Map(services.map((s) => [s.id, s]));
-
-async function getEnrollmentData(email: string) {
-  const db = getDb();
-
-  const results = await db
-    .select()
-    .from(waiverInquiries)
-    .where(eq(waiverInquiries.parentEmail, email))
-    .orderBy(waiverInquiries.createdAt)
-    .limit(1);
-
-  if (results.length === 0) return null;
-
-  const inquiry = results[0];
-
-  let selectedServiceIds: string[] = [];
-  try {
-    selectedServiceIds = JSON.parse(inquiry.selectedServices || "[]");
-  } catch {
-    selectedServiceIds = [];
-  }
-
-  const selectedServices = selectedServiceIds
-    .map((id) => SERVICE_MAP.get(id))
-    .filter(Boolean) as typeof services;
-
-  return {
-    parent_name: inquiry.parentName,
-    parent_email: inquiry.parentEmail,
-    phone_number: inquiry.phoneNumber,
-    student_name: inquiry.studentName,
-    grade_level: inquiry.gradeLevel,
-    selected_services: selectedServices,
-  };
+interface EnrollmentData {
+  parent_name: string;
+  parent_email: string;
+  phone_number: string | null;
+  student_name: string;
+  grade_level: string;
+  selected_services: {
+    id: string;
+    label: string;
+    weekly_rates: Record<string, number>;
+  }[];
 }
 
-export default async function EnrollmentPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ email?: string }>;
-}) {
-  const params = await searchParams;
-  const email = params.email;
+function EnrollmentContent() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const [data, setData] = useState<EnrollmentData | null>(null);
+  const [loading, setLoading] = useState(!!email);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!email) return;
+
+    fetch(`/api/enrollment?email=${encodeURIComponent(email)}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const err = await res.json().catch(() => null);
+          throw new Error(err?.error || "Not found");
+        }
+        return res.json();
+      })
+      .then((d) => {
+        setData(d);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(
+          err instanceof Error ? err.message : "Something went wrong",
+        );
+        setLoading(false);
+      });
+  }, [email]);
 
   if (!email) {
     return (
@@ -69,9 +61,15 @@ export default async function EnrollmentPage({
     );
   }
 
-  const data = await getEnrollmentData(email);
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
         <div className="text-center">
@@ -86,9 +84,19 @@ export default async function EnrollmentPage({
     );
   }
 
+  return <EnrollmentForm data={data} />;
+}
+
+export default function EnrollmentPage() {
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <EnrollmentForm data={data} />
-    </div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      }
+    >
+      <EnrollmentContent />
+    </Suspense>
   );
 }
