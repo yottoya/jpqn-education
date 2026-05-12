@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import Stripe from "stripe";
 import { getDb } from "@/lib/db";
 import { waiverInquiries } from "@/lib/db/schema";
 import { Resend } from "resend";
@@ -181,31 +180,40 @@ export async function POST(request: NextRequest) {
     }
 
     const origin = request.headers.get("origin") || "https://jpqnedu.org";
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Waiver Inquiry Processing Fee",
-              description: `Inquiry for ${data.student_name}`,
-            },
-            unit_amount: 500,
-          },
+    const stripeRes = await fetch(
+      "https://api.stripe.com/v1/checkout/sessions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY!}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-      ],
-      customer_email: data.parent_email,
-      metadata: {
-        inquiry_id: String(inserted.id),
-        student_name: data.student_name,
+        body: new URLSearchParams({
+          mode: "payment",
+          "line_items[0][quantity]": "1",
+          "line_items[0][price_data][currency]": "usd",
+          "line_items[0][price_data][product_data][name]":
+            "Waiver Inquiry Processing Fee",
+          "line_items[0][price_data][product_data][description]":
+            `Inquiry for ${data.student_name}`,
+          "line_items[0][price_data][unit_amount]": "500",
+          customer_email: data.parent_email,
+          "metadata[inquiry_id]": String(inserted.id),
+          "metadata[student_name]": data.student_name,
+          success_url: `${origin}/thank-you`,
+          cancel_url: `${origin}/waiver-inquiry`,
+        }),
       },
-      success_url: `${origin}/thank-you`,
-      cancel_url: `${origin}/waiver-inquiry`,
-    });
+    );
+
+    const session = await stripeRes.json();
+
+    if (!stripeRes.ok) {
+      throw new Error(
+        `Stripe error: ${session.error?.message || "Unknown"}`,
+      );
+    }
 
     return NextResponse.json({
       success: true,
