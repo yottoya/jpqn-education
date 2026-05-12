@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
@@ -12,8 +12,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import SignaturePad from "@/components/signature-pad";
 import waiverData from "@/data/waiver-form-questions.json";
 import services from "@/data/services.json";
+
+const STORAGE_KEY = "jpqn-waiver-form";
 
 type Field =
   | {
@@ -51,17 +54,15 @@ const identificationIndex = data.findIndex(
 );
 const sectionsBefore = data.slice(0, identificationIndex);
 const sectionsAfter =
-  identificationIndex >= 0
-    ? data.slice(identificationIndex + 1)
-    : [];
+  identificationIndex >= 0 ? data.slice(identificationIndex + 1) : [];
 
 const identificationSection =
   identificationIndex >= 0 ? data[identificationIndex] : null;
 
 type MediaPermission = "Yes" | "No";
 
-interface FormValues {
-  date: Date;
+interface SavedFormState {
+  date: string;
   parent_name: string;
   parent_email: string;
   phone_number: string;
@@ -71,18 +72,66 @@ interface FormValues {
   risk_acknowledgment: boolean;
   liability_waiver: boolean;
   medical_authorization: boolean;
-  media_permission: MediaPermission;
+  media_permission: string;
   fee_agreement: boolean;
   third_party_tools: boolean;
   academic_responsibility_disclaimer: boolean;
   speech_and_communication_waiver: boolean;
   payment_terms: boolean;
+  selectedServiceIds: string[];
+  signatureDataUrl: string;
+}
+
+function loadSavedState(): SavedFormState | null {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed._timestamp > 30 * 60 * 1000) {
+      sessionStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function buildInitialDefaults(): SavedFormState {
+  const saved = loadSavedState();
+  return {
+    date: saved?.date || new Date().toISOString(),
+    parent_name: saved?.parent_name || "",
+    parent_email: saved?.parent_email || "",
+    phone_number: saved?.phone_number || "",
+    student_name: saved?.student_name || "",
+    grade_level: saved?.grade_level || "",
+    academic_tutoring: saved?.academic_tutoring || false,
+    risk_acknowledgment: saved?.risk_acknowledgment || false,
+    liability_waiver: saved?.liability_waiver || false,
+    medical_authorization: saved?.medical_authorization || false,
+    media_permission: saved?.media_permission || "No",
+    fee_agreement: saved?.fee_agreement || false,
+    third_party_tools: saved?.third_party_tools || false,
+    academic_responsibility_disclaimer:
+      saved?.academic_responsibility_disclaimer || false,
+    speech_and_communication_waiver:
+      saved?.speech_and_communication_waiver || false,
+    payment_terms: saved?.payment_terms || false,
+    selectedServiceIds: saved?.selectedServiceIds || [],
+    signatureDataUrl: saved?.signatureDataUrl || "",
+  };
 }
 
 export default function WaiverInquiryForm() {
   const router = useRouter();
+  const initial = useMemo(() => buildInitialDefaults(), []);
   const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(
-    new Set(),
+    () => new Set(initial.selectedServiceIds),
+  );
+  const [isSigned, setIsSigned] = useState(!!initial.signatureDataUrl);
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(
+    initial.signatureDataUrl || null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -101,26 +150,39 @@ export default function WaiverInquiryForm() {
 
   const form = useForm({
     defaultValues: {
-      date: new Date(),
-      parent_name: "",
-      parent_email: "",
-      phone_number: "",
-      student_name: "",
-      grade_level: "",
-      academic_tutoring: false,
-      risk_acknowledgment: false,
-      liability_waiver: false,
-      medical_authorization: false,
-      media_permission: "No" as MediaPermission,
-      fee_agreement: false,
-      third_party_tools: false,
-      academic_responsibility_disclaimer: false,
-      speech_and_communication_waiver: false,
-      payment_terms: false,
+      date: new Date(initial.date),
+      parent_name: initial.parent_name,
+      parent_email: initial.parent_email,
+      phone_number: initial.phone_number,
+      student_name: initial.student_name,
+      grade_level: initial.grade_level,
+      academic_tutoring: initial.academic_tutoring,
+      risk_acknowledgment: initial.risk_acknowledgment,
+      liability_waiver: initial.liability_waiver,
+      medical_authorization: initial.medical_authorization,
+      media_permission: initial.media_permission as MediaPermission,
+      fee_agreement: initial.fee_agreement,
+      third_party_tools: initial.third_party_tools,
+      academic_responsibility_disclaimer:
+        initial.academic_responsibility_disclaimer,
+      speech_and_communication_waiver:
+        initial.speech_and_communication_waiver,
+      payment_terms: initial.payment_terms,
     },
     onSubmit: async ({ value }) => {
       setIsSubmitting(true);
       setError(null);
+
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          ...value,
+          date: value.date instanceof Date ? value.date.toISOString() : value.date,
+          selectedServiceIds: Array.from(selectedServiceIds),
+          signatureDataUrl: signatureDataUrl || "",
+          _timestamp: Date.now(),
+        }),
+      );
 
       try {
         const res = await fetch("/api/waiver-inquiry", {
@@ -129,6 +191,7 @@ export default function WaiverInquiryForm() {
           body: JSON.stringify({
             ...value,
             selected_service_ids: Array.from(selectedServiceIds),
+            signature_data_url: signatureDataUrl,
           }),
         });
 
@@ -140,6 +203,7 @@ export default function WaiverInquiryForm() {
         const { url } = await res.json();
 
         if (url) {
+          sessionStorage.removeItem(STORAGE_KEY);
           router.push(url);
         } else {
           setError("No checkout URL returned. Please try again.");
@@ -254,7 +318,8 @@ export default function WaiverInquiryForm() {
               {section.fields.map((fieldData) => (
                 <form.Field
                   key={fieldData.id}
-                  name={fieldData.id as keyof FormValues}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  name={fieldData.id as any}
                   validators={{
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
@@ -282,7 +347,8 @@ export default function WaiverInquiryForm() {
               {identificationSection.fields.map((fieldData) => (
                 <form.Field
                   key={fieldData.id}
-                  name={fieldData.id as keyof FormValues}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  name={fieldData.id as any}
                   validators={{
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
@@ -364,7 +430,8 @@ export default function WaiverInquiryForm() {
               {section.fields.map((fieldData) => (
                 <form.Field
                   key={fieldData.id}
-                  name={fieldData.id as keyof FormValues}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  name={fieldData.id as any}
                   validators={{
                     onChange: fieldData.required
                       ? fieldData.type === "checkbox"
@@ -381,13 +448,38 @@ export default function WaiverInquiryForm() {
           </div>
         ))}
 
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Signature</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Please sign above to confirm your agreement to all terms and
+            conditions.
+          </p>
+          <SignaturePad
+            variant="default"
+            size="md"
+            onSave={(dataUrl) => setSignatureDataUrl(dataUrl)}
+            onChange={(dataUrl) => setSignatureDataUrl(dataUrl)}
+            onSignature={setIsSigned}
+          />
+          {!isSigned && (
+            <p className="text-xs text-muted-foreground text-center">
+              Signature required to submit. Please sign until the button
+              activates.
+            </p>
+          )}
+        </div>
+
         {error && (
           <p className="text-sm font-medium text-destructive text-center">
             {error}
           </p>
         )}
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting || !isSigned}
+          className="w-full"
+        >
           {isSubmitting ? "Submitting..." : "Submit & Pay $5"}
         </Button>
       </form>

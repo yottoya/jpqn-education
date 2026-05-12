@@ -32,6 +32,7 @@ const inquirySchema = z.object({
   academic_responsibility_disclaimer: z.boolean(),
   speech_and_communication_waiver: z.boolean(),
   payment_terms: z.boolean(),
+  signature_data_url: z.string().optional(),
 });
 
 const BUSINESS_ADDRESS =
@@ -147,6 +148,7 @@ export async function POST(request: NextRequest) {
           data.academic_responsibility_disclaimer,
         speechAndCommunicationWaiver: data.speech_and_communication_waiver,
         paymentTerms: data.payment_terms,
+        signatureDataUrl: data.signature_data_url ?? null,
       })
       .returning();
 

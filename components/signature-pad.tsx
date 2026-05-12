@@ -13,6 +13,7 @@ interface SignaturePadProps {
   size?: SignaturePadSize;
   onSave?: (dataUrl: string) => void;
   onChange?: (dataUrl: string | null) => void;
+  onSignature?: (signed: boolean) => void;
   className?: string;
 }
 
@@ -22,11 +23,37 @@ const sizeClasses: Record<SignaturePadSize, string> = {
   lg: "h-64",
 };
 
+const COVERAGE_SAMPLE_STEP = 10;
+const COVERAGE_THRESHOLD = 0.01;
+
+function checkCoverage(canvas: HTMLCanvasElement): boolean {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return false;
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    canvas.width / window.devicePixelRatio,
+    canvas.height / window.devicePixelRatio,
+  );
+  const data = imageData.data;
+  let painted = 0;
+  let total = 0;
+  for (let y = 0; y < imageData.height; y += COVERAGE_SAMPLE_STEP) {
+    for (let x = 0; x < imageData.width; x += COVERAGE_SAMPLE_STEP) {
+      total++;
+      const i = (y * imageData.width + x) * 4;
+      if (data[i + 3] > 0) painted++;
+    }
+  }
+  return total > 0 && painted / total >= COVERAGE_THRESHOLD;
+}
+
 export default function SignaturePad({
   variant = "default",
   size = "md",
   onSave,
   onChange,
+  onSignature,
   className,
 }: SignaturePadProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -91,9 +118,14 @@ export default function SignaturePad({
     const point = getCoordinates(e);
     if (!point) return;
     const ctx = getCanvasContext();
-    if (!ctx) return;
-    ctx.lineTo(point.x, point.y);
+    if (!ctx || !lastPoint.current) return;
+
+    const midX = (lastPoint.current.x + point.x) / 2;
+    const midY = (lastPoint.current.y + point.y) / 2;
+    ctx.quadraticCurveTo(lastPoint.current.x, lastPoint.current.y, midX, midY);
     ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(midX, midY);
     lastPoint.current = point;
     setHasSignature(true);
 
@@ -109,9 +141,19 @@ export default function SignaturePad({
     lastPoint.current = null;
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = getCanvasContext();
+    if (ctx) {
+      ctx.beginPath();
+    }
+
     if (canvas && onSave) {
       onSave(canvas.toDataURL());
     }
+
+    const isCovered = checkCoverage(canvas);
+    onSignature?.(isCovered);
   };
 
   const clearSignature = () => {
@@ -121,6 +163,7 @@ export default function SignaturePad({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     setHasSignature(false);
     onChange?.(null);
+    onSignature?.(false);
   };
 
   const isOutline = variant === "outline";
